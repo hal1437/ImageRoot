@@ -1,0 +1,29 @@
+
+use my_app;
+-- ルート
+create table roots(
+	root_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	created DATETIME DEFAULT CURRENT_TIMESTAMP,
+	title TEXT,
+	image_id INTEGER
+);
+-- ノード
+create table nodes(
+	node_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	created DATETIME DEFAULT CURRENT_TIMESTAMP,
+	user_name TEXT,
+	message TEXT,
+	root_id  INTEGER,
+	reply_id INTEGER DEFAULT -1,
+	image_id INTEGER DEFAULT -1
+);
+-- 画像
+create table images(
+	image_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	url TEXT
+);
+
+insert into roots (title,image_id)                              values("今日の夕飯について",1);
+insert into nodes (user_name,message,root_id,reply_id,image_id) values("一人暮らし","今日はカレーを作ってみました。",1,-1,1);
+insert into nodes (user_name,message,root_id,reply_id,image_id) values("シェフ"    ,"滝かよ"                        ,1, 1,-1);
+insert into images(url)                                         values("https://goo.gl/i62vJr");
