@@ -3,6 +3,7 @@
 		<h1>トップページ</h1>
 		<p class="lead"><?= $title?></p>
 	</div>
+	<!-- 新規作成パネル -->
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			新しいRootを作成
@@ -16,10 +17,23 @@
 		</div>
 	</div>
 
-	<!--ToDoリストの表示-->
-	<?php foreach($query as $row):?>
-		<?= $this->element('Root',['item'=>$row]); ?>
-	<?php endforeach?>
+	<!-- Root一覧 -->
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			最近のRoot一覧
+		</div>
+		<div class="panel-body">
+			<div class="row">
+				<?php foreach($query as $row):?>
+					<div class="col-xs-6 col-md-3">
+						<?= $this->element('Root',['item'=>$row]); ?>
+					</div>
+				<?php endforeach?>
+			</div>
+		</div>
+	</div>
+
+	
 
 	<?= $this->Html->script('AccessAPI.js');?>
 </div>

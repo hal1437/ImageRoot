@@ -24,6 +24,9 @@ create table images(
 );
 
 insert into roots (title,image_id)                              values("今日の夕飯について",1);
+insert into roots (title,image_id)                              values("今日も夕飯について",1);
+insert into roots (title,image_id)                              values("毎日の夕飯について",1);
+insert into roots (title,image_id)                              values("明日も夕飯について",1);
 insert into nodes (user_name,message,root_id,reply_id,image_id) values("一人暮らし","今日はカレーを作ってみました。",1,-1,1);
 insert into nodes (user_name,message,root_id,reply_id,image_id) values("シェフ"    ,"滝かよ"                        ,1, 1,-1);
 insert into images(url)                                         values("https://goo.gl/i62vJr");
