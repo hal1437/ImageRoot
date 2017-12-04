@@ -1,5 +1,6 @@
 
-.root-image{
-	width: 200px;
-	height: 200px;
+.node-image {
+	display: block;
+	height: auto;
+	max-width: 40%;
 }

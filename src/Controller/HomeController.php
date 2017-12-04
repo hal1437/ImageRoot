@@ -8,7 +8,7 @@ use Cake\Cache\Cache;
 class HomeController extends AppController
 {
 	public function initialize(){
-		$this->viewBuilder()->layout('ToDoHeader');
+		$this->viewBuilder()->layout('ImageRootHeader');
 	}
 	public function index(){
 		Cache::disable();

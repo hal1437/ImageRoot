@@ -14,7 +14,7 @@ class Node extends Entity {
 		return $this->user_name;
 	}
 	public function GetMessage() {
-		return $this->user_name;
+		return $this->message;
 	}
 	public function GetReplyID() {
 		return $this->reply_id;
@@ -43,7 +43,7 @@ class Node extends Entity {
 					'image_id' => $this->image_id
 				]
 			]);
-			return $query->first();
+			return $query->first()["url"];
 		}
 	}
 }

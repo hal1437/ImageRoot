@@ -12,7 +12,8 @@
 			<div class="form-group">
 				<label for="ListName">タイトル</label>
 				<input type="text" class="form-control" id="ListName" placeholder="例.今日の夕飯">
-				<button class="btn btn-primary" onclick="CreateToDoList()">作成</button>
+				<button class="btn btn-primary" onclick="Upload()">画像を添付</button>
+				<button class="btn btn-primary" onclick="CreateRoot()">作成</button>
 			</div>
 		</div>
 	</div>

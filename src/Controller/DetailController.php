@@ -7,36 +7,25 @@ use Cake\ORM\TableRegistry;//テーブル使用
 class DetailController extends AppController
 {
 	public function initialize(){
-		$this->viewBuilder()->layout('ToDoHeader');
+		$this->viewBuilder()->layout('ImageRootHeader');
 	}
-	public function getList(){
-		$model = TableRegistry::get('ToDoLists');
-		$query = $model->find('all',[
+	//モデルからこのrootのnodeを取得
+	public function GetNodes(){
+		$model = TableRegistry::get('nodes');
+		return $model->find('all',[
 			'conditions' =>[
-				'list_id' => $this->request->query['list']
+				'root_id' => $this->GetRootID()
 			]
-		])->order(['made' => 'DESC']);
-		foreach($query as $row){
-			return $row;
-		}
+		])->order(['created' => 'DESC']);
 	}
-	public function getListID(){
-		return $this->getList()->getID();
+	public function GetRootID(){
+		return $this->request->query['list'];
 	}
 	public function index(){
-		$this->set('title','ToDoLists - Detail');
+		$this->set('title','ImageRoot - Detail');
 
 		//モデルからリストを抽出
-		$model = TableRegistry::get('ToDos');
-		$list = $this->getList();
-		$this->set('list'   ,$list);
-		if($list != null){
-			$this->set('query',$model->find('all',[
-				'conditions' =>[
-					'list_id' => $this->getListID()
-				]
-			])->order(['made' => 'DESC']));
-		}
+		$this->set('list',$this->GetNodes());
 	}
 }
 
