@@ -14,9 +14,9 @@ function SendAjax(url,data,success){
 	});
 }
 
-function CreateToDoList(){
+function CreateRoot(){
 	SendAjax(
-		"/API/CreateToDoList",
+		"/API/CreateRoot",
 		{ name : $("#ListName").val() },
 		function(response){
 			//通信成功時の処理
@@ -26,18 +26,17 @@ function CreateToDoList(){
 	);
 }
 
-function CreateToDo(){
+function CreateNode(){
 	var url   = location.href;
 	params    = url.split("?");
 	if(params.length < 2)return;
 	spparams   = params[1].split("&")[0].split("=");
 	SendAjax(
-		"/API/CreateToDo",
+		"/API/CreateNode",
 		{
-			text    : $("#ToDoText").val(), 
-			todo_id : spparams[1],
-			date    : $("#ToDoDate").val() 
-
+			user_name : $("#NodeUser").val(), 
+			message   : $("#NodeMessage").val(),
+			root_id   : spparams[1],
 		},
 		function(response){
 			//通信成功時の処理
@@ -46,8 +45,8 @@ function CreateToDo(){
 		}
 	);
 }
-function RemoveList(id){
-	var con = confirm("このToDoListを削除しますか？");
+function RemoveRoot(id){
+	var con = confirm("このRootを削除しますか？");
 	if(con){
 		SendAjax(
 			"/API/RemoveList",
@@ -59,11 +58,11 @@ function RemoveList(id){
 		);	
 	}
 }
-function RemoveToDo(id){
-	var con = confirm("このToDoを削除しますか？");
+function RemoveNode(id){
+	var con = confirm("このNodeを削除しますか？");
 	if(con){
 		SendAjax(
-			"/API/RemoveToDo",
+			"/API/RemoveNode",
 			{ id : id },
 			function(response){
 				//通信成功時の処理
@@ -71,13 +70,4 @@ function RemoveToDo(id){
 			}
 		);	
 	}
-}
-function ToggleToDo(index){
-	SendAjax(
-		"/API/ToggleCheck",
-		{ id : index },
-		function(response){
-			location.reload();
-		}
-	);
 }

@@ -16,7 +16,7 @@ class DetailController extends AppController
 			'conditions' =>[
 				'root_id' => $this->GetRootID()
 			]
-		])->order(['created' => 'DESC']);
+		])->order(['created' => 'ASC']);
 	}
 	public function GetRootID(){
 		return $this->request->query['list'];

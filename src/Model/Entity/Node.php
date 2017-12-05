@@ -10,6 +10,9 @@ class Node extends Entity {
 	public function GetRootID() {
 		return $this->root_id;
 	}
+	public function GetCreated() {
+		return date("Y年m月d日 H時i分s秒",strtotime($this->created));
+	}
 	public function GetUserName() {
 		return $this->user_name;
 	}

@@ -13,9 +13,9 @@ class APIController extends AppController
 		$this->autoRender = false;
 		echo $this->request->query('page');
 	}
-	public function createToDoList(){
+	public function createRoot(){
 		$this->autoRender = false;
-		$list = TableRegistry::get('ToDoLists');
+		$list = TableRegistry::get('root');
 		if($this->request->is('ajax')){
 			$new_name = h($this->request->getData('name'));
 			if($new_name == ""){
@@ -23,87 +23,61 @@ class APIController extends AppController
 				return ;
 			}
 			if(mb_strlen($new_name)>=31){
-				echo "ToDo名の最大文字数は30文字です。";
+				echo "Root名の最大文字数は30文字です。";
 				return;
 			}
 
 			//重複
-			if($list->existToDoList($new_name)){
-				echo "既に存在するToDoList「". $new_name."」は作成できません。";
+			if($list->existRoot($new_name)){
+				echo "既に存在するRoot「". $new_name."」は作成できません。";
 				return;
 			}
 			$entity = $list->newEntity(); //エンティティ作成
 			$entity->setName($new_name);
 			$list->save($entity);
-			echo "新しいToDoList「".$entity->name."」を作成しました";   //echoでもOK
+			echo "新しいRoot「".$entity->name."」を作成しました";   //echoでもOK
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
 	}
-	public function createToDo(){
+	public function createNode(){
 		$this->autoRender = false;
-		$list = TableRegistry::get('ToDos');
+		$list = TableRegistry::get('nodes');
 		if($this->request->is('ajax')){
-			//ToDo名が空
-			if(h($this->request->getData('text')) == ""){
-				echo "ToDo名が空です。";
+			//Node内容が空
+			if(h($this->request->getData('message')) == ""){
+				echo "Node内容が空です。";
 				return;
 			}
-			if(mb_strlen(h($this->request->getData('text')))>=31){
-				echo "ToDo名の最大文字数は30文字です。";
-				return;
-			}
-			//重複
-			if($list->existToDo($this->request->getData('todo_id'),h($this->request->getData('text')))){
-				echo "既に存在するToDo「". h($this->request->getData('text'))."」は作成できません。";
-				return;
-			}
-			//日付フォーマットチェック
-			$datetime = h($this->request->getData('date'));
-			if($datetime == ""){
-				echo "締め切り日が選択されていません。";
-				return;
-			}
+// 			if(mb_strlen(h($this->request->getData('text')))>=31){
+// 				echo "Node名の最大文字数は30文字です。";
+// 				return;
+// 			}
 			//エンティティ追加
 			$entity = $list->newEntity(); 
-			$entity->list_id = h($this->request->getData('todo_id'));
-			$entity->text    = h($this->request->getData('text'));
-			$entity->lim     = $datetime;
-			$entity->comp    = false;
-			$list->save($entity);
-			echo "新しいToDo「".$entity->text."」を作成しました。";
-			echo "期限は".$entity->getLimit()."までです。";
+			$entity->user_name = h($this->request->getData('user_name'));
+			$entity->root_id   = h($this->request->getData('root_id'));
+			$entity->message   = h($this->request->getData('message'));
+			$entity->image_id  = -1;
+			echo "新しいNodeを作成しました\n";   //echoでもOK
+			echo $this->request->getData('message');   //echoでもOK
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
 	}
-	public function RemoveList(){
+	public function RemoveRoot(){
 		$this->autoRender = false;
-		$list = TableRegistry::get('ToDoLists');
-		$obj = $list->get(h($this->request->getData('id')));
+		$list = TableRegistry::get('roots');
+		$obj = $list->get(h($this->request->getData('root_id')));
 		$list->delete($obj);
 		echo "削除";
 	}
-	public function RemoveToDo(){
+	public function RemoveNode(){
 		$this->autoRender = false;
-		$list = TableRegistry::get('ToDos');
-		$obj = $list->get(h($this->request->getData('id')));
+		$list = TableRegistry::get('nodes');
+		$obj = $list->get(h($this->request->getData('node_id')));
 		$list->delete($obj);
 		echo "削除";
-	}
-	public function ToggleCheck(){
-		$this->autoRender = false;
-		if($this->request->is('ajax')){
-			$id = $this->request->getData('id');
-			$todos = TableRegistry::get('ToDos');
-			$obj = $todos->get($id);
-
-			$obj->comp = !$obj->comp;//反転
-			$todos->save($obj);
-			echo "反転";
-		}else{
-			echo "このAPIはajaxでのみ許可されます。";
-		}
 	}
 
 }
