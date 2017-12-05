@@ -38,8 +38,6 @@
 			<p class="text-muted">Place sticky footer content here.</p>
 		</div>
 	</footer>
-
-	<?= $this->Html->script('datepicker.js');?>
 	<?= $this->Html->script('AccessAPI.js');?>
 </div>
 

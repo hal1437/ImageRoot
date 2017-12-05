@@ -17,10 +17,12 @@ function SendAjax(url,data,success){
 function CreateRoot(){
 	SendAjax(
 		"/API/CreateRoot",
-		{title    : $("#ListName").val(),
-		 image_id : -1},
+		{title     : $("#ListName").val(),
+		 user_name : $("#NodeUser").val(), 
+		 message   : $("#NodeMessage").val(),
+		 image_id  : -1},
 		function(response){
-			//通信成功時の処理
+// 			location.href = "/detail?list=" + response;
 			alert(response);
 			location.reload();
 		}
@@ -37,7 +39,7 @@ function CreateNode(){
 		{
 			user_name : $("#NodeUser").val(), 
 			message   : $("#NodeMessage").val(),
-			root_id   : spparams[1],
+			root_id   : spparams[1]
 		},
 		function(response){
 			//通信成功時の処理

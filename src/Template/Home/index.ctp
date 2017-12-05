@@ -12,9 +12,19 @@
 			<div class="form-group">
 				<label for="ListName">タイトル</label>
 				<input type="text" class="form-control" id="ListName" placeholder="例.今日の夕飯">
-				<button class="btn btn-primary" onclick="Upload()">画像を添付</button>
-				<button class="btn btn-primary" onclick="CreateRoot()">作成</button>
 			</div>
+			<div class="form-group">
+				<label for="NodeUser">名前</label>
+				<input type="text" class="form-control" id="NodeUser" placeholder="例.料理人">
+			</div>
+			<div class="form-group">
+				<textarea class="form-control" id="NodeMessage" rows="3" placeholder="例.カレーライス作ってみました"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="NodeImage">画像を添付</label>
+				<input type="file" class="form-control-file" id="NodeImage" aria-describedby="fileHelp">
+			</div>
+			<button class="btn btn-primary" onclick="CreateRoot()">作成</button>
 		</div>
 	</div>
 
@@ -33,8 +43,6 @@
 			</div>
 		</div>
 	</div>
-
-	
 
 	<?= $this->Html->script('AccessAPI.js');?>
 </div>

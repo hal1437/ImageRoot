@@ -17,26 +17,48 @@ class APIController extends AppController
 		$this->autoRender = false;
 		$list = TableRegistry::get('roots');
 		if($this->request->is('ajax')){
-			$title = h($this->request->getData('title'));
+			$title     = h($this->request->getData('title'));
+			$user_name = h($this->request->getData('user_name'));
+			$image_id  = h($this->request->getData('image_id'));
+			$message   = h($this->request->getData('message'));
+			//空文字
 			if($title == ""){
 				echo "タイトルが空です";
 				return ;
 			}
+			//空文字
+			if($message == ""){
+				echo "本文が空です";
+				return ;
+			}
+			//最大文字数
 			if(mb_strlen($title)>=31){
 				echo "Root名の最大文字数は30文字です。";
 				return;
 			}
-
 			//重複
 			if($list->existRoot($title)){
 				echo "既に存在するRoot「". $title."」は作成できません。";
 				return;
 			}
+
 			$entity = $list->newEntity(); //エンティティ作成
-			$entity->title    = h($this->request->getData('title'));
-			$entity->image_id = h($this->request->getData('image_id'));
+			$entity->title     = $title;
+			$entity->user_name = $user_name;
+			$entity->message   = $message;
+			$entity->image_id  = $image_id;
 			$list->save($entity);
-// 			echo "新しいRoot「".$entity->name."」を作成しました";   //echoでもOK
+
+			//Node作成
+			$nodes = TableRegistry::get('nodes');
+			$node = $nodes->newEntity(); 
+			$node->user_name = $user_name;
+			$node->root_id   = $entity->root_id;
+			$node->message   = $message;
+			$node->image_id  = $image_id;
+			$nodes->save($node);
+			
+			echo "新しいRootを作成しました。";
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
