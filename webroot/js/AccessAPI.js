@@ -17,7 +17,8 @@ function SendAjax(url,data,success){
 function CreateRoot(){
 	SendAjax(
 		"/API/CreateRoot",
-		{ name : $("#ListName").val() },
+		{title    : $("#ListName").val(),
+		 image_id : -1},
 		function(response){
 			//通信成功時の処理
 			alert(response);

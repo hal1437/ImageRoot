@@ -14,7 +14,8 @@ class Root extends Entity {
 				'image_id' => $this->image_id
 			]
 		]);
-		return $query->first()->GetURL();
+		if($query->count() > 0)return $query->first()->GetURL();
+		else return "";
 	}
 	public function GetTitle() {
 		return $this->title;

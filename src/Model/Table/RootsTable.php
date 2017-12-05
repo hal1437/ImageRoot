@@ -7,10 +7,10 @@ class RootsTable extends Table {
 		$this->table('roots');
 	}
 	//リストの存在確認
-	public function existToDoList($name){
+	public function existRoot($name){
 		return $this->find('all',[
 			'conditions' => [
-				'name' => $name
+				'title' => $name
 			]
 		 ])->count() > 0;
 	}

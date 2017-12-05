@@ -13,34 +13,35 @@ class APIController extends AppController
 		$this->autoRender = false;
 		echo $this->request->query('page');
 	}
-	public function createRoot(){
+	public function CreateRoot(){
 		$this->autoRender = false;
-		$list = TableRegistry::get('root');
+		$list = TableRegistry::get('roots');
 		if($this->request->is('ajax')){
-			$new_name = h($this->request->getData('name'));
-			if($new_name == ""){
-				echo "リスト名が空です";
+			$title = h($this->request->getData('title'));
+			if($title == ""){
+				echo "タイトルが空です";
 				return ;
 			}
-			if(mb_strlen($new_name)>=31){
+			if(mb_strlen($title)>=31){
 				echo "Root名の最大文字数は30文字です。";
 				return;
 			}
 
 			//重複
-			if($list->existRoot($new_name)){
-				echo "既に存在するRoot「". $new_name."」は作成できません。";
+			if($list->existRoot($title)){
+				echo "既に存在するRoot「". $title."」は作成できません。";
 				return;
 			}
 			$entity = $list->newEntity(); //エンティティ作成
-			$entity->setName($new_name);
+			$entity->title    = h($this->request->getData('title'));
+			$entity->image_id = h($this->request->getData('image_id'));
 			$list->save($entity);
-			echo "新しいRoot「".$entity->name."」を作成しました";   //echoでもOK
+// 			echo "新しいRoot「".$entity->name."」を作成しました";   //echoでもOK
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
 	}
-	public function createNode(){
+	public function CreateNode(){
 		$this->autoRender = false;
 		$list = TableRegistry::get('nodes');
 		if($this->request->is('ajax')){
