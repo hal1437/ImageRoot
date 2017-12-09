@@ -82,6 +82,7 @@ class APIController extends AppController
 			$entity->root_id   = h($this->request->getData('root_id'));
 			$entity->message   = h($this->request->getData('message'));
 			$entity->image_id  = -1;
+			$list->save($entity);
 			echo "新しいNodeを作成しました\n";   //echoでもOK
 			echo $this->request->getData('message');   //echoでもOK
 		}else{
