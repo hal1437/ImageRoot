@@ -4,6 +4,8 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;//テーブル使用
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
 
 class APIController extends AppController
 {
@@ -12,6 +14,24 @@ class APIController extends AppController
 	public function index(){
 		$this->autoRender = false;
 		echo $this->request->query('page');
+	}
+	public function UploadImage(){
+		$this->autoRender = false;
+
+		// 一時アップロード先ファイルパス
+		$file_tmp  = $_FILES["NodeImage"]["tmp_name"];
+		$s3client = S3Client::factory([
+			'region' => 'us-east-2',
+			'version' => 'latest',
+		]);
+		$result = $s3client->putObject([
+			'Bucket' => 'ir-s3-bucket',
+			'Key' => "Images/".$_FILES["NodeImage"]["name"],
+			'SourceFile' => $file_tmp,
+			'ContentType' => mime_content_type($file_tmp),
+		]);
+
+		echo $result;
 	}
 	public function CreateRoot(){
 		$this->autoRender = false;

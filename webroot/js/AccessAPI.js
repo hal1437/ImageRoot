@@ -1,4 +1,26 @@
 
+function UploadImage(){
+	// フォームデータを取得
+	var formdata = new FormData($('#NodeImage').get(0));
+
+	// POSTでアップロード
+	$.ajax({
+		url  : "/API/UploadImage",
+		type : "POST",
+		data : formdata,
+		cache       : false,
+		contentType : false,
+		processData : false,
+		dataType    : "html"
+	})
+	.done(function(data, textStatus, jqXHR){
+		console.log(data);
+	})
+	.fail(function(jqXHR, textStatus, errorThrown){
+		alert("fail");
+	});
+}
+
 function SendAjax(url,data,success){
 	$.ajax({
 		url: url,
@@ -21,7 +43,7 @@ function CreateRoot(){
 		 user_name : $("#NodeUser").val(), 
 		 message   : $("#NodeMessage").val(),
 		 image_id  : -1},
-		function(response){
+		 function(response){
 // 			location.href = "/detail?list=" + response;
 			alert(response);
 			location.reload();

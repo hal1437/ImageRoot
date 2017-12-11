@@ -20,10 +20,15 @@
 			<div class="form-group">
 				<textarea class="form-control" id="NodeMessage" rows="3" placeholder="例.カレーライス作ってみました"></textarea>
 			</div>
-			<div class="form-group">
-				<label for="NodeImage">画像を添付</label>
-				<input type="file" class="form-control-file" id="NodeImage" aria-describedby="fileHelp">
-			</div>
+
+			<form action="API/UploadImage" method="post" enctype="multipart/form-data">
+				<div class="form-group">
+					<label for="NodeImage">画像を添付</label>
+					<input type="file" class="form-control-file" name="NodeImage" aria-describedby="fileHelp">
+				</div>
+				<button type="submit"  class="btn btn-primary">アップロード</button>
+			</form>
+
 			<button class="btn btn-primary" onclick="CreateRoot()">作成</button>
 		</div>
 	</div>
