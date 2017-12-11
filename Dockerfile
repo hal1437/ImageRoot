@@ -14,4 +14,4 @@ RUN apt-get install -y zip
 RUN mkdir /code
 WORKDIR /code
 ADD . /code/
-CMD composer install
+CMD composer update

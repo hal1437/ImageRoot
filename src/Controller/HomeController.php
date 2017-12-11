@@ -22,6 +22,14 @@ class HomeController extends AppController
 	public function all(){
 		$this->autoRender = false;
 
+		$s3client = new Aws\S3\S3Client([
+			'credentials' => [
+				'key' => 'your access key',
+				'secret' => 'your access secret',
+			],
+			'region' => 'ap-northeast-1',
+			'version' => 'latest',
+		]);
 		$model = TableRegistry::get('roots');
 		$query = $model->find();
 		foreach ($query as $row) {
