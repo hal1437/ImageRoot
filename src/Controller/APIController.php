@@ -9,38 +9,44 @@ use Aws\S3\Exception\S3Exception;
 
 class APIController extends AppController
 {
+
 	public function initialize(){
 	}
+
 	public function index(){
 		$this->autoRender = false;
 		echo $this->request->query('page');
 	}
 	public function UploadImage(){
 		$this->autoRender = false;
-
-		// 一時アップロード先ファイルパス
-		$file_tmp  = $_FILES["NodeImage"]["tmp_name"];
+			//ファイルアップロード
 		$s3client = S3Client::factory([
 			'region' => 'us-east-2',
 			'version' => 'latest',
 		]);
+		// 一時アップロード先ファイルパス
+		$file_name = $this->request->data['file']["name"];
+		$file_tmp  = $this->request->data['file']["tmp_name"];
 		$result = $s3client->putObject([
-			'Bucket' => 'ir-s3-bucket',
-			'Key' => "Images/".$_FILES["NodeImage"]["name"],
-			'SourceFile' => $file_tmp,
+			'Bucket'      => 'ir-s3-bucket',
+			'Key'         => "Images/" . $file_name,
+			'SourceFile'  => $file_tmp,
 			'ContentType' => mime_content_type($file_tmp),
+			'ACL'         => 'public-read',
 		]);
-
-		echo $result;
+		echo $result["ObjectURL"];
 	}
+
 	public function CreateRoot(){
 		$this->autoRender = false;
-		$list = TableRegistry::get('roots');
+		$roots = TableRegistry::get('roots');
 		if($this->request->is('ajax')){
 			$title     = h($this->request->getData('title'));
 			$user_name = h($this->request->getData('user_name'));
 			$image_id  = h($this->request->getData('image_id'));
 			$message   = h($this->request->getData('message'));
+			$image_url = h($this->request->getData('image_url'));
+
 			//空文字
 			if($title == ""){
 				echo "タイトルが空です";
@@ -57,26 +63,36 @@ class APIController extends AppController
 				return;
 			}
 			//重複
-			if($list->existRoot($title)){
+			if($roots->existRoot($title)){
 				echo "既に存在するRoot「". $title."」は作成できません。";
 				return;
 			}
+			if($image_url == ""){
+				echo "画像URLが空です";
+				return;
+			}
+			//新しいImage作成
+			$images = TableRegistry::get('images');
+			$new_image = $images->newEntity(); //エンティティ作成
+			$new_image->url = $image_url;
+			$images->save($new_image);
 
-			$entity = $list->newEntity(); //エンティティ作成
-			$entity->title     = $title;
-			$entity->user_name = $user_name;
-			$entity->message   = $message;
-			$entity->image_id  = $image_id;
-			$list->save($entity);
+			//新しいRootを作成
+			$new_root = $roots->newEntity(); //エンティティ作成
+			$new_root->title     = $title;
+			$new_root->user_name = $user_name;
+			$new_root->message   = $message;
+			$new_root->image_id  = $new_image->image_id;
+			$roots->save($new_root);
 
-			//Node作成
+			//新しいNode作成
 			$nodes = TableRegistry::get('nodes');
-			$node = $nodes->newEntity(); 
-			$node->user_name = $user_name;
-			$node->root_id   = $entity->root_id;
-			$node->message   = $message;
-			$node->image_id  = $image_id;
-			$nodes->save($node);
+			$new_node = $nodes->newEntity(); 
+			$new_node->user_name = $user_name;
+			$new_node->root_id   = $new_root->root_id;
+			$new_node->message   = $message;
+			$new_node->image_id  = $new_image->image_id;
+			$nodes->save($new_node);
 			
 			echo "新しいRootを作成しました。";
 		}else{

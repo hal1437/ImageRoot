@@ -1,26 +1,4 @@
 
-function UploadImage(){
-	// フォームデータを取得
-	var formdata = new FormData($('#NodeImage').get(0));
-
-	// POSTでアップロード
-	$.ajax({
-		url  : "/API/UploadImage",
-		type : "POST",
-		data : formdata,
-		cache       : false,
-		contentType : false,
-		processData : false,
-		dataType    : "html"
-	})
-	.done(function(data, textStatus, jqXHR){
-		console.log(data);
-	})
-	.fail(function(jqXHR, textStatus, errorThrown){
-		alert("fail");
-	});
-}
-
 function SendAjax(url,data,success){
 	$.ajax({
 		url: url,
@@ -36,22 +14,57 @@ function SendAjax(url,data,success){
 	});
 }
 
-function CreateRoot(){
-	SendAjax(
-		"/API/CreateRoot",
-		{title     : $("#ListName").val(),
-		 user_name : $("#NodeUser").val(), 
-		 message   : $("#NodeMessage").val(),
-		 image_id  : -1},
-		 function(response){
-// 			location.href = "/detail?list=" + response;
-			alert(response);
-			location.reload();
-		}
-	);
+function UploadImage(data,success){
+	$.ajax({
+		url     : "API/UploadImage",
+		type    : "POST",
+		data    : data,
+		success : success,
+		error: function(data){
+			//通信失敗時の処理
+			alert('通信失敗');
+			console.log(data);
+		},
+		processData : false,
+		contentType : false
+	});
 }
 
+function CreateRoot(){
+
+	var fd = new FormData();
+	if ($("input[name='Image']").val()!== '') {
+		fd.append( "file", $("input[name='Image']").prop("files")[0] );
+	}
+	fd.append("dir",$("#Image").val());
+
+	//画像のアップロード
+	UploadImage(
+		fd,
+		function(image_url){
+			//Root作成
+			SendAjax(
+				"/API/CreateRoot",
+				{title     : $("#ListName").val(),
+				user_name : $("#NodeUser").val(), 
+				message   : $("#NodeMessage").val(),
+				image_url : image_url,
+				},
+				function(response){
+					console.log(response);
+					location.reload();
+				}
+			);
+		}
+	);
+
+	}
+
 function CreateNode(){
+	// フォームデータを取得
+	var formdata = new FormData();
+	formdata.append("NodeImage",$('#NodeImage').get(0));
+
 	var url   = location.href;
 	params    = url.split("?");
 	if(params.length < 2)return;
@@ -61,11 +74,12 @@ function CreateNode(){
 		{
 			user_name : $("#NodeUser").val(), 
 			message   : $("#NodeMessage").val(),
-			root_id   : spparams[1]
+			root_id   : spparams[1],
+			data      : formdata,
 		},
 		function(response){
 			//通信成功時の処理
-			alert(response);
+			console.log(response);
 			location.reload();
 		}
 	);
