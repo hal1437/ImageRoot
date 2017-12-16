@@ -10,6 +10,55 @@ use Aws\S3\Exception\S3Exception;
 class APIController extends AppController
 {
 
+	//Rootをデータベースに登録
+	private function create_root($request){
+		//パラメータ取得
+		$title     = h($request['title']);
+		$user_name = h($request['user_name']);
+		$image_id  = h($request['image_id']);
+		$message   = h($request['message']);
+		
+		//各制限
+		$roots = TableRegistry::get('roots');
+		if($title    == ""          ){echo "タイトルが空です";return;}
+		if($message  == ""          ){echo "本文が空です"    ;return ;}
+		if($image_id == -1          ){echo "Rootの作成にはファイルの添付が必要です。"         ;return;}
+		if(mb_strlen($title) >= 31  ){echo "Root名の最大文字数は30文字です。"                 ;return;}
+		if($roots->existRoot($title)){echo "既に存在するRoot「". $title."」は作成できません。";return;}
+
+		//新しいRootを作成
+		$new_root = $roots->newEntity(); //エンティティ作成
+		$new_root->title     = $title;
+		$new_root->user_name = $user_name;
+		$new_root->message   = $message;
+		$new_root->image_id  = $image_id;
+		$roots->save($new_root);
+		return $new_root;
+	}
+	//Nodeをデータベースに登録
+	private function create_node($request){
+		//パラメータ取得
+		$message   = h($request['message']);
+		$user_name = h($request['user_name']);
+		$root_id   = h($request['root_id']);
+		$image_id  = h($request['image_id']);
+
+		//各制限
+		if($user_name == ""){echo "タイトルが空です";return ;}
+		if($message   == ""){echo "本文が空です"    ;return ;}
+		if($root_id   == ""){echo "root_idが空です" ;return ;}
+
+		//新しいNode作成
+		$nodes = TableRegistry::get('nodes');
+		$new_node = $nodes->newEntity(); 
+		$new_node->message   = $message;
+		$new_node->user_name = $user_name;
+		$new_node->root_id   = $root_id;
+		$new_node->image_id  = $image_id;
+		$nodes->save($new_node);
+		return $new_node;
+	}
+
 	public function initialize(){
 	}
 
@@ -17,9 +66,9 @@ class APIController extends AppController
 		$this->autoRender = false;
 		echo $this->request->query('page');
 	}
+	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
 	public function UploadImage(){
 		$this->autoRender = false;
-			//ファイルアップロード
 		$s3client = S3Client::factory([
 			'region' => 'us-east-2',
 			'version' => 'latest',
@@ -27,6 +76,7 @@ class APIController extends AppController
 		// 一時アップロード先ファイルパス
 		$file_name = $this->request->data['file']["name"];
 		$file_tmp  = $this->request->data['file']["tmp_name"];
+		//S3にアップロード
 		$result = $s3client->putObject([
 			'Bucket'      => 'ir-s3-bucket',
 			'Key'         => "Images/" . $file_name,
@@ -34,65 +84,35 @@ class APIController extends AppController
 			'ContentType' => mime_content_type($file_tmp),
 			'ACL'         => 'public-read',
 		]);
-		echo $result["ObjectURL"];
+
+		//新しいImageとしてデータベースにURLを登録
+		$images = TableRegistry::get('images');
+		$new_image = $images->newEntity(); //エンティティ作成
+		$new_image->url = $result["ObjectURL"];
+		$images->save($new_image);
+
+		echo $new_image;
 	}
 
 	public function CreateRoot(){
 		$this->autoRender = false;
-		$roots = TableRegistry::get('roots');
 		if($this->request->is('ajax')){
-			$title     = h($this->request->getData('title'));
-			$user_name = h($this->request->getData('user_name'));
-			$image_id  = h($this->request->getData('image_id'));
-			$message   = h($this->request->getData('message'));
-			$image_url = h($this->request->getData('image_url'));
+			$root = $this->create_root([
+				"title"     => $this->request->getData('title'),
+				"user_name" => $this->request->getData('user_name'),
+				"message"   => $this->request->getData('message'),
+				"image_id"  => $this->request->getData('image_id'),
+			]);
+			if($root == null)return;
 
-			//空文字
-			if($title == ""){
-				echo "タイトルが空です";
-				return ;
-			}
-			//空文字
-			if($message == ""){
-				echo "本文が空です";
-				return ;
-			}
-			//最大文字数
-			if(mb_strlen($title)>=31){
-				echo "Root名の最大文字数は30文字です。";
-				return;
-			}
-			//重複
-			if($roots->existRoot($title)){
-				echo "既に存在するRoot「". $title."」は作成できません。";
-				return;
-			}
-			if($image_url == ""){
-				echo "画像URLが空です";
-				return;
-			}
-			//新しいImage作成
-			$images = TableRegistry::get('images');
-			$new_image = $images->newEntity(); //エンティティ作成
-			$new_image->url = $image_url;
-			$images->save($new_image);
-
-			//新しいRootを作成
-			$new_root = $roots->newEntity(); //エンティティ作成
-			$new_root->title     = $title;
-			$new_root->user_name = $user_name;
-			$new_root->message   = $message;
-			$new_root->image_id  = $new_image->image_id;
-			$roots->save($new_root);
-
-			//新しいNode作成
-			$nodes = TableRegistry::get('nodes');
-			$new_node = $nodes->newEntity(); 
-			$new_node->user_name = $user_name;
-			$new_node->root_id   = $new_root->root_id;
-			$new_node->message   = $message;
-			$new_node->image_id  = $new_image->image_id;
-			$nodes->save($new_node);
+			$node = $this->create_node([
+				"message"   => $this->request->getData('message'),
+				"user_name" => $this->request->getData('user_name'),
+				"message"   => $this->request->getData('message'),
+				"root_id"   => $root->root_id,
+				"image_id"  => $this->request->getData('image_id'),
+			]);
+			if($node == null)return;
 			
 			echo "新しいRootを作成しました。";
 		}else{
@@ -103,24 +123,17 @@ class APIController extends AppController
 		$this->autoRender = false;
 		$list = TableRegistry::get('nodes');
 		if($this->request->is('ajax')){
-			//Node内容が空
-			if(h($this->request->getData('message')) == ""){
-				echo "Node内容が空です。";
-				return;
-			}
-// 			if(mb_strlen(h($this->request->getData('text')))>=31){
-// 				echo "Node名の最大文字数は30文字です。";
-// 				return;
-// 			}
-			//エンティティ追加
-			$entity = $list->newEntity(); 
-			$entity->user_name = h($this->request->getData('user_name'));
-			$entity->root_id   = h($this->request->getData('root_id'));
-			$entity->message   = h($this->request->getData('message'));
-			$entity->image_id  = -1;
-			$list->save($entity);
-			echo "新しいNodeを作成しました\n";   //echoでもOK
-			echo $this->request->getData('message');   //echoでもOK
+			$node = $this->create_node([
+				"message"   => $this->request->getData('message'),
+				"user_name" => $this->request->getData('user_name'),
+				"message"   => $this->request->getData('message'),
+				"root_id"   => $this->request->getData('root_id'),
+				"image_id"  => $this->request->getData('image_id'),
+			]);
+			if($node == null)return null;
+
+			echo "新しいNodeを作成しました\n";
+			echo $node->message;
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}

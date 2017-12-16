@@ -26,9 +26,9 @@
 			</div>
 			<div class="form-group">
 				<label for="NodeImage">画像を添付</label>
-				<input type="file" class="form-control-file" id="NodeImage" aria-describedby="fileHelp">
+				<input type="file" class="form-control-file" name="NodeImage" aria-describedby="fileHelp">
 			</div>
-			<button type="submit" class="btn btn-primary" onclick="CreateNode()">作成</button>
+			<button type="submit" class="btn btn-primary" onclick="SubmitPushed()">作成</button>
 
 		</div>
 	</div>
@@ -39,5 +39,6 @@
 		</div>
 	</footer>
 	<?= $this->Html->script('AccessAPI.js');?>
+	<?= $this->Html->script('Detail.js');?>
 </div>
 

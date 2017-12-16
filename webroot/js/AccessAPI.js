@@ -30,53 +30,22 @@ function UploadImage(data,success){
 	});
 }
 
-function CreateRoot(){
-
-	var fd = new FormData();
-	if ($("input[name='Image']").val()!== '') {
-		fd.append( "file", $("input[name='Image']").prop("files")[0] );
-	}
-	fd.append("dir",$("#Image").val());
-
-	//画像のアップロード
-	UploadImage(
-		fd,
-		function(image_url){
-			//Root作成
-			SendAjax(
-				"/API/CreateRoot",
-				{title     : $("#ListName").val(),
-				user_name : $("#NodeUser").val(), 
-				message   : $("#NodeMessage").val(),
-				image_url : image_url,
-				},
-				function(response){
-					console.log(response);
-					location.reload();
-				}
-			);
+function CreateRoot(params){
+	SendAjax(
+		"/API/CreateRoot",
+		params,
+		function(response){
+			//通信成功時の処理
+			console.log(response);
+// 			location.reload();
 		}
 	);
+}
 
-	}
-
-function CreateNode(){
-	// フォームデータを取得
-	var formdata = new FormData();
-	formdata.append("NodeImage",$('#NodeImage').get(0));
-
-	var url   = location.href;
-	params    = url.split("?");
-	if(params.length < 2)return;
-	spparams   = params[1].split("&")[0].split("=");
+function CreateNode(params){
 	SendAjax(
 		"/API/CreateNode",
-		{
-			user_name : $("#NodeUser").val(), 
-			message   : $("#NodeMessage").val(),
-			root_id   : spparams[1],
-			data      : formdata,
-		},
+		params,
 		function(response){
 			//通信成功時の処理
 			console.log(response);

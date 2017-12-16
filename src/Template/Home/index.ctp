@@ -22,11 +22,11 @@
 			</div>
 
 			<div class="form-group">
-				<label for="Image">画像を添付</label>
-				<input type="file" class="form-control-file" name="Image" aria-describedby="fileHelp">
+				<label for="RootImage">画像を添付</label>
+				<input type="file" class="form-control-file" name="RootImage" aria-describedby="fileHelp">
 			</div>
 
-			<button class="btn btn-primary" onclick="CreateRoot()">作成</button>
+			<button class="btn btn-primary" onclick="SubmitPushed()">作成</button>
 		</div>
 	</div>
 
@@ -47,5 +47,6 @@
 	</div>
 
 	<?= $this->Html->script('AccessAPI.js');?>
+	<?= $this->Html->script('Home.js');?>
 </div>
 
