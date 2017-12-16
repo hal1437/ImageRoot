@@ -13,7 +13,6 @@ function SubmitPushed(){
 		image_id  : -1,
 	};
 	
-	console.log(params);
 	//添付画像があれば
 	if ($("input[name='NodeImage']").val()!== '') {
 		var fd = new FormData();
@@ -22,9 +21,9 @@ function SubmitPushed(){
 		//ファイルアップロード
 		UploadImage(
 			fd,
-			function(image_url){
+			function(image){
 				//アップロードされた画像のURLを追加して作成
-				params["image_url"] = image_url;
+				params["image_id"] = JSON.parse(image)['image_id'];
 				//成功時にNodeを作成する。
 				CreateNode(params);
 			}

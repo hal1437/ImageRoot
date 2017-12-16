@@ -10,7 +10,6 @@ function SubmitPushed(){
 		image_id  : -1,
 	};
 	
-	console.log(params);
 	//添付画像があれば
 	if ($("input[name='RootImage']").val()!== '') {
 		var fd = new FormData();
@@ -22,8 +21,6 @@ function SubmitPushed(){
 			function(image){
 				//アップロードされた画像のURLを追加して作成
 				params["image_id"] = JSON.parse(image)['image_id'];
-				console.log(image);
-				console.log(params);
 				//成功時にNodeを作成する。
 				CreateRoot(params);
 			}

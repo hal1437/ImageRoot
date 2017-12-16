@@ -36,8 +36,8 @@ function CreateRoot(params){
 		params,
 		function(response){
 			//通信成功時の処理
-			console.log(response);
-// 			location.reload();
+			alert(response);
+			location.reload();
 		}
 	);
 }
@@ -48,7 +48,7 @@ function CreateNode(params){
 		params,
 		function(response){
 			//通信成功時の処理
-			console.log(response);
+			alert(response);
 			location.reload();
 		}
 	);
