@@ -75,6 +75,7 @@ use Cake\Utility\Security;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+	Configure::load('CloudFront', 'default', false); //追加
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
@@ -220,3 +221,6 @@ Type::build('timestamp')
 if (Configure::read('debug')) {
     Plugin::load('DebugKit', ['bootstrap' => true]);
 }
+
+
+

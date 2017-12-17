@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;//テーブル使用
+use Cake\Core\Configure;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
@@ -85,10 +86,18 @@ class APIController extends AppController
 			'ACL'         => 'public-read',
 		]);
 
+		//CloudFrontが登録されていなければそのままS3のリンクを設定
+		$image_url = "";
+		if(Configure::read('cloud_front_domain', 'CloudFront.php') == ""){
+			$image_url = $result["ObjectURL"];
+		}else{
+			$image_url = "http://".Configure::read('cloud_front_domain', 'CloudFront.php')."/Images/".$file_name;
+		}
+
 		//新しいImageとしてデータベースにURLを登録
 		$images = TableRegistry::get('images');
 		$new_image = $images->newEntity(); //エンティティ作成
-		$new_image->url = $result["ObjectURL"];
+		$new_image->url = $image_url;
 		$images->save($new_image);
 
 		echo $new_image;
