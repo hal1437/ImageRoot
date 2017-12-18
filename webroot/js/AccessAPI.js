@@ -9,6 +9,7 @@ function SendAjax(url,data,success){
 		error: function(data){
 			//通信失敗時の処理
 			alert('通信失敗');
+			$(".loading-gif").hide();
 			console.log(data);
 		}
 	});

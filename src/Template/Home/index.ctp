@@ -27,6 +27,8 @@
 			</div>
 
 			<button class="btn btn-primary" onclick="SubmitPushed()">作成</button>
+			<img class="loading-gif" src="img/gif-load.gif"></button>
+			<div class="status-message"></div>
 		</div>
 	</div>
 
