@@ -22,59 +22,117 @@ ImageRootは画像をアップロードして、その画像について会話�
 githubからファイルのダウンロード
 
 ```
-git pull https://github.com/hal1437/ImageRoot
+$ git clone https://github.com/hal1437/ImageRoot
 ```
 ディレクトリを移動
 
 ```
-cd ImageRoot/
+$ cd ImageRoot/
 ```
 
 dockerで起動
 
 ```
-dockerc-compose build
-dockerc-compose up
+$ dockerc-compose build
+$ dockerc-compose up
 ```
 DockerComposeによってサーバーとデータベースが構築されます。サイトへのアクセスは https://localhost:8765 から閲覧できます。
 
-## 3.1 EC2環境での起動
+## 3.2 EC2環境での起動
 
 
 githubからファイルのダウンロード
 
 ```
-git pull https://github.com/hal1437/ImageRoot
+$ git pull https://github.com/hal1437/ImageRoot
 ```
 
 ディレクトリを移動
 ```
-cd ImageRoot/
+$ cd ImageRoot/
 ```
 
 使用するソフトウェアをインストール
 ```
-apt-get update
-apt-get install -y composer
-apt-get install -y curl
-apt-get install -y php
-apt-get install -y php-intl
-apt-get install -y php-mbstring
-apt-get install -y php-mysql
-apt-get install -y php-xml
-apt-get install -y unzip
-apt-get install -y zip
+$ apt-get update
+$ apt-get install -y composer
+$ apt-get install -y curl
+$ apt-get install -y php
+$ apt-get install -y php-intl
+$ apt-get install -y php-mbstring
+$ apt-get install -y php-mysql
+$ apt-get install -y php-xml
+$ apt-get install -y unzip
+$ apt-get install -y zip
 ```
 composerでさらにソフトウェアをインストール
 ```
-composer update
+$ composer update
 ```
 
 サーバーを起動
 ```
-bin/cake server -H 0.0.0.0 -P 80
+$ bin/cake server -H 0.0.0.0 -p 80
 ```
--P の値を変更することでポートを変更できます。
+-p の値を変更することでポートを変更できます。
+
+## 4. サーバーの設定
+
+### データベースの設定
+cakePHPはデーターベースの情報をconfig/app.phpに記録しています。
+app.default.phpからコピー
+```
+$ cp config/app.default.php config/app.php
+```
+
+ファイルを編集しデータベースの情報を設定する。
+ユーザー名、パスワード、データベース名を変更する。
+```php:config/app.php
+    'Datasources' => [
+        'default' => [
+            'className' => 'Cake\Database\Connection',
+            'driver' => 'Cake\Database\Driver\Mysql',
+            'persistent' => false,
+            'host' => 'mysql',
+            /**
+             * CakePHP will use the default DB port based on the driver selected
+             * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
+             * the following line and set the port accordingly
+             */
+            //'port' => 'non_standard_port_number',
+            'username' => 'ユーザー名',
+            'password' => 'パスワード',
+            'database' => 'データベース名',
+            'encoding' => 'utf8',
+            'timezone' => 'UTC', 
+            'flags' => [],
+            'cacheMetadata' => true,
+            'log' => false, 
+```
+
+### AWSの設定
+AWS-SDKは~/.aws/credentialsファイルに記述されたキーを元にS3アクセスします。
+ImageRootディレクトリではなくホームディレクトリである点に注意。
+~/.awsディレクトリを作成。
+```
+$ mkdir ~/.aws
+```
+アクセスキーIDとシークレットアクセスキーを設定
+```
+[default]
+aws_access_key_id=アクセスキーID
+aws_secret_access_key=シークレットアクセスキー
+region=us-east-2
+```
+ImageRootはS3のImage/以下に画像を保存するため、あらかじめS3にImage/ファイルを作成する必要があります。
 
 
-
+### CloudFrontの設定
+config/CloudFrontにCloudFrontのドメイン名を設定することでS3へCloudFrontを経由してアクセスします。
+```
+<?php
+return [
+	"cloud_front_domain" => ""
+];
+```
+CloudFrontのドメイン名を空にした場合、直接S3へ接続されます。
