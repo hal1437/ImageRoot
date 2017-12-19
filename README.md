@@ -44,7 +44,7 @@ DockerComposeによってサーバーとデータベースが構築されます�
 githubからファイルのダウンロード
 
 ```
-$ git pull https://github.com/hal1437/ImageRoot
+$ git clone https://github.com/hal1437/ImageRoot
 ```
 
 ディレクトリを移動
