@@ -13,6 +13,7 @@ class APIController extends AppController
 
 	//Rootをデータベースに登録
 	private function create_root($request){
+		TableRegistry::config("write");
 		//パラメータ取得
 		$title     = h($request['title']);
 		$user_name = h($request['user_name']);
@@ -38,6 +39,7 @@ class APIController extends AppController
 	}
 	//Nodeをデータベースに登録
 	private function create_node($request){
+		TableRegistry::config("write");
 		//パラメータ取得
 		$message   = h($request['message']);
 		$user_name = h($request['user_name']);
@@ -69,6 +71,7 @@ class APIController extends AppController
 	}
 	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
 	public function UploadImage(){
+		TableRegistry::config("write");
 		$this->autoRender = false;
 		$s3client = S3Client::factory([
 			'region' => 'us-east-2',
@@ -104,6 +107,7 @@ class APIController extends AppController
 	}
 
 	public function CreateRoot(){
+		TableRegistry::config("write");
 		$this->autoRender = false;
 		if($this->request->is('ajax')){
 			$root = $this->create_root([
@@ -129,6 +133,7 @@ class APIController extends AppController
 		}
 	}
 	public function CreateNode(){
+		TableRegistry::config("write");
 		$this->autoRender = false;
 		$list = TableRegistry::get('nodes');
 		if($this->request->is('ajax')){
@@ -148,6 +153,7 @@ class APIController extends AppController
 		}
 	}
 	public function RemoveRoot(){
+		TableRegistry::config("write");
 		$this->autoRender = false;
 		$list = TableRegistry::get('roots');
 		$obj = $list->get(h($this->request->getData('root_id')));
@@ -155,6 +161,7 @@ class APIController extends AppController
 		echo "削除";
 	}
 	public function RemoveNode(){
+		TableRegistry::config("write");
 		$this->autoRender = false;
 		$list = TableRegistry::get('nodes');
 		$obj = $list->get(h($this->request->getData('node_id')));

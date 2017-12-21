@@ -11,6 +11,7 @@ class DetailController extends AppController
 	}
 	//モデルからこのrootのnodeを取得
 	public function GetNodes(){
+		TableRegistry::config("default");
 		$model = TableRegistry::get('nodes');
 		return $model->find('all',[
 			'conditions' =>[

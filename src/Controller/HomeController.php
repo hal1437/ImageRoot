@@ -26,8 +26,7 @@ class HomeController extends AppController
 
 	public function all(){
 		$this->autoRender = false;
-
-
+		TableRegistry::config("default");
 		$model = TableRegistry::get('roots');
 		$query = $model->find();
 		foreach ($query as $row) {
