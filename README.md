@@ -87,6 +87,7 @@ $ cp config/app.default.php config/app.php
 
 ファイルを編集しデータベースの情報を設定する。
 SQLホストIP、ユーザー名、パスワード、データベース名を変更する。
+Datasources/defaultに読み込むデータベースの情報を記述する。
 ```php:config/app.php
     'Datasources' => [
         'default' => [
@@ -94,11 +95,26 @@ SQLホストIP、ユーザー名、パスワード、データベース名を変
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
             'host' => 'SQLホストIP',
-            /**
-             * CakePHP will use the default DB port based on the driver selected
-             * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
-             * the following line and set the port accordingly
-             */
+            //'port' => 'non_standard_port_number',
+            'username' => 'ユーザー名',
+            'password' => 'パスワード',
+            'database' => 'データベース名',
+            'encoding' => 'utf8',
+            'timezone' => 'UTC', 
+            'flags' => [],
+            'cacheMetadata' => true,
+            'log' => false, 
+```
+
+リードレプリカなどを使用する場合、書き込みのデータベースを別の物に指定できる。
+Datasources/writeに書き込むデータベースの情報を記述する。
+```php:config/app.php
+    'Datasources' => [
+        'write' => [
+            'className' => 'Cake\Database\Connection',
+            'driver' => 'Cake\Database\Driver\Mysql',
+            'persistent' => false,
+            'host' => 'SQLホストIP',
             //'port' => 'non_standard_port_number',
             'username' => 'ユーザー名',
             'password' => 'パスワード',
