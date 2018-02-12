@@ -1,45 +1,25 @@
 <img width="1025" alt="2017-12-18 23 30 42" src="https://user-images.githubusercontent.com/8135472/34284191-8d8cd02c-e713-11e7-986a-73d960aff231.png">
 
-# 1.概要
+# 1. 概要
 
 ImageRootは画像をアップロードして、その画像について会話することができるサービスです。  
 
 # 2. 環境
 
-+ cakePHP 3.4
-+ Docker 17.03.1-ce
-+ Docker Compose version 1.11.2
-+ mysql 5.7.18 (dockerが自動的にダウンロード)
-+ Ubuntu 16.04.2 LTS (dockerが自動的にダウンロード)
-+ aws-sdk-php 3.48.0
+cakePHP 3.4
+Docker 17.03.1-ce
+mysql 5.7.18 (dockerが自動的にダウンロード)
+Ubuntu 16.04.2 LTS (dockerが自動的にダウンロード)
+aws-sdk-php 3.48.0
 
 このソフトウェアはファイルのアップロードにAWSのS3を使用することを前提としています。
 
 # 3.インストール
 
-## 3.1 Docker環境での起動
+ImageRootはDocker-composeを使用することでデータベースを同時に作成することが可能です。
+外部のデータベースを使用する場合はDockerfileからビルドを行います。
 
-githubからファイルのダウンロード
-
-```
-$ git clone https://github.com/hal1437/ImageRoot
-```
-ディレクトリを移動
-
-```
-$ cd ImageRoot/
-```
-
-dockerで起動
-
-```
-$ dockerc-compose build
-$ dockerc-compose up
-```
-DockerComposeによってサーバーとデータベースが構築されます。サイトへのアクセスは https://localhost:8765 から閲覧できます。
-
-## 3.2 EC2環境での起動
-
+## 3.1 データベースを同時に起動する方法
 
 githubからファイルのダウンロード
 
@@ -48,46 +28,28 @@ $ git clone https://github.com/hal1437/ImageRoot
 ```
 
 ディレクトリを移動
+
 ```
 $ cd ImageRoot/
 ```
 
-使用するソフトウェアをインストール
+docker-composeでサーバーとデータベースを同時に作成し、起動する
+
 ```
-$ apt-get update
-$ apt-get install -y composer
-$ apt-get install -y curl
-$ apt-get install -y php
-$ apt-get install -y php-intl
-$ apt-get install -y php-mbstring
-$ apt-get install -y php-mysql
-$ apt-get install -y php-xml
-$ apt-get install -y unzip
-$ apt-get install -y zip
-```
-composerでさらにソフトウェアをインストール
-```
-$ composer update
+$ docker-compose build
+$ docker-compose up
 ```
 
-サーバーを起動
-```
-$ bin/cake server -H 0.0.0.0 -p 80
-```
--p の値を変更することでポートを変更できます。
+## 3.2 外部のデータベースを利用する方法
 
-## 4. サーバーの設定
-
-### データベースの設定
 cakePHPはデーターベースの情報をconfig/app.phpに記録しています。
 app.default.phpからコピー
+
 ```
 $ cp config/app.default.php config/app.php
 ```
 
-ファイルを編集しデータベースの情報を設定する。
-SQLホストIP、ユーザー名、パスワード、データベース名を変更する。
-Datasources/defaultに読み込むデータベースの情報を記述する。
+Datasources/defaultを編集しSQLホストIP、ユーザー名、パスワード、データベース名を変更します。
 ```php:config/app.php
     'Datasources' => [
         'default' => [
@@ -106,8 +68,7 @@ Datasources/defaultに読み込むデータベースの情報を記述する。
             'log' => false, 
 ```
 
-リードレプリカなどを使用する場合、書き込みのデータベースを別の物に指定できる。
-Datasources/writeに書き込むデータベースの情報を記述する。
+リードレプリカなどを使用する場合、Datasources/writeに書き込みのデータベースを別の物に指定します。
 ```php:config/app.php
     'Datasources' => [
         'write' => [
@@ -125,14 +86,28 @@ Datasources/writeに書き込むデータベースの情報を記述する。
             'cacheMetadata' => true,
             'log' => false, 
 ```
+dockerでコンテナを作成
 
-### AWSの設定
+```
+$ docker build ./ -t imageroot_web
+```
+
+サーバーを起動
+
+```
+$ docker run -d -p 80:8765 -v `pwd`:/code imageroot_web bin/cake server -H 0.0.0.0
+```
+
+# 4.サーバーの設定
+## 4.1 AWSの設定
 AWS-SDKは~/.aws/credentialsファイルに記述されたキーを元にS3アクセスします。
 ImageRootディレクトリではなくホームディレクトリである点に注意。
 ~/.awsディレクトリを作成。
+
 ```
 $ mkdir ~/.aws
 ```
+
 アクセスキーIDとシークレットアクセスキーを設定
 ```
 [default]
@@ -142,8 +117,7 @@ region=us-east-2
 ```
 ImageRootはS3のImage/以下に画像を保存するため、あらかじめS3にImage/ファイルを作成する必要があります。
 
-
-### CloudFrontの設定
+## 4.2 CloudFrontの設定
 config/CloudFrontにCloudFrontのドメイン名を設定することでS3へCloudFrontを経由してアクセスします。
 ```
 <?php
