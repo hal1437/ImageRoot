@@ -10,7 +10,8 @@
         "mobiledetect/mobiledetectlib": "2.*",
         "cakephp/migrations": "~1.0",
         "cakephp/plugin-installer": "~1.0",
-		"aws/aws-sdk-php": "3.*"
+		"aws/aws-sdk-php": "3.*",
+        "fusic/maintenance": "^3.1"
     },
     "require-dev": {
         "psy/psysh": "@stable",

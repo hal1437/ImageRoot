@@ -2,7 +2,7 @@ version: '2'
 services:
     web:
         build: ./
-        command: bash -c "composer update && bin/cake server -H 0.0.0.0"
+        command: bash -c "composer install && bin/cake server -H 0.0.0.0"
         container_name: ToDoLists
         ports:
             - "8765:8765"

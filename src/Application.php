@@ -19,6 +19,7 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use Maintenance\Middleware\MaintenanceMiddleware;
 
 /**
  * Application setup class.
@@ -40,6 +41,9 @@ class Application extends BaseApplication
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(ErrorHandlerMiddleware::class)
+
+            // Add Maintenance Plugin
+            ->add(MaintenanceMiddleware::class)         
 
             // Handle plugin/theme assets like CakePHP normally does.
             ->add(AssetMiddleware::class)

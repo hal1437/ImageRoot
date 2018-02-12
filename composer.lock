@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "870f679453f835ca6240ad1c4e348799",
-    "content-hash": "904e2a91ded19111dca7052ca108bc09",
+    "hash": "e10364f4e4e6a831d809fbe3472e4938",
+    "content-hash": "90bba9a304e0b3b5dcaa5da649e1fd4e",
     "packages": [
         {
             "name": "aura/intl",
@@ -369,6 +369,37 @@
             ],
             "description": "A composer installer for CakePHP 3.0+ plugins.",
             "time": "2017-12-24 21:09:29"
+        },
+        {
+            "name": "fusic/maintenance",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fusic/maintenance.git",
+                "reference": "765a071a5c9a67fcb0b250e8e8f81befba2ca842"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fusic/maintenance/zipball/765a071a5c9a67fcb0b250e8e8f81befba2ca842",
+                "reference": "765a071a5c9a67fcb0b250e8e8f81befba2ca842",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": ">=3.3.2 <4.0.0",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "Maintenance\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Maintenance plugin for CakePHP",
+            "time": "2018-02-06 00:39:47"
         },
         {
             "name": "guzzlehttp/guzzle",
