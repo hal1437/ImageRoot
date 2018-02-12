@@ -13,6 +13,5 @@ RUN apt-get install -y zip
 
 RUN mkdir /code
 WORKDIR /code
-ADD . /code/
 CMD sed -i -e "s/;extension=php_openssl.dll/extension=php_openssl.dll/g" /etc/php/7.0/cli/php.ini
 CMD composer update
