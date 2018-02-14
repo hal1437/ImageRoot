@@ -7,6 +7,7 @@ use Cake\ORM\TableRegistry;//テーブル使用
 class DetailController extends AppController
 {
 	public function initialize(){
+		parent::initialize();
 		$this->viewBuilder()->layout('ImageRootHeader');
 	}
 	//モデルからこのrootのnodeを取得

@@ -22,6 +22,16 @@ create table images(
 	image_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	url TEXT
 );
+-- ユーザーデータ
+create table users (
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	username VARCHAR(50),
+	password VARCHAR(255),
+	mail VARCHAR(255),
+	role VARCHAR(20),
+	created DATETIME DEFAULT NULL,
+	modified DATETIME DEFAULT NULL	
+);
 
 -- insert into roots (title,image_id)                     values("今日の夕飯について",1);
 -- insert into roots (title,image_id)                     values("今日も夕飯について",1);

@@ -11,6 +11,7 @@ use \Aws\S3\Exception\S3Exception;
 class HomeController extends AppController
 {
 	public function initialize(){
+		parent::initialize();
 		$this->viewBuilder()->layout('ImageRootHeader');
 	}
 	public function Upload(){

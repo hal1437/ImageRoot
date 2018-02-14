@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e10364f4e4e6a831d809fbe3472e4938",
-    "content-hash": "90bba9a304e0b3b5dcaa5da649e1fd4e",
+    "hash": "f20f1e5f6ee926fa0254e5667a4f9325",
+    "content-hash": "91df308171a2633d6b9b1295f7a81794",
     "packages": [
         {
             "name": "aura/intl",
@@ -55,16 +55,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.52.6",
+            "version": "3.52.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "c9af7657eddc0267cc7ac4f969c10d5c18459992"
+                "reference": "4abee976c5884b1bc376b8388dd1ac53b4643bb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c9af7657eddc0267cc7ac4f969c10d5c18459992",
-                "reference": "c9af7657eddc0267cc7ac4f969c10d5c18459992",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4abee976c5884b1bc376b8388dd1ac53b4643bb6",
+                "reference": "4abee976c5884b1bc376b8388dd1ac53b4643bb6",
                 "shasum": ""
             },
             "require": {
@@ -131,7 +131,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-02-09 22:53:37"
+            "time": "2018-02-12 21:48:20"
         },
         {
             "name": "cakephp/cakephp",
@@ -688,6 +688,147 @@
                 "jsonpath"
             ],
             "time": "2016-12-03 22:08:25"
+        },
+        {
+            "name": "opauth/facebook",
+            "version": "0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opauth/facebook.git",
+                "reference": "50e9df822552973d27e2a9eabe9eff5954e738b7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opauth/facebook/zipball/50e9df822552973d27e2a9eabe9eff5954e738b7",
+                "reference": "50e9df822552973d27e2a9eabe9eff5954e738b7",
+                "shasum": ""
+            },
+            "require": {
+                "opauth/opauth": ">=0.2.0",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "U-Zyn Chua",
+                    "email": "chua@uzyn.com",
+                    "homepage": "http://uzyn.com"
+                }
+            ],
+            "description": "Facebook strategy for Opauth",
+            "homepage": "http://opauth.org",
+            "keywords": [
+                "Authentication",
+                "auth",
+                "facebook"
+            ],
+            "time": "2017-09-05 23:35:20"
+        },
+        {
+            "name": "opauth/opauth",
+            "version": "0.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opauth/opauth.git",
+                "reference": "436fb98c2374c9e8ae4d8adddf83214bee4d9c72"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opauth/opauth/zipball/436fb98c2374c9e8ae4d8adddf83214bee4d9c72",
+                "reference": "436fb98c2374c9e8ae4d8adddf83214bee4d9c72",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "suggest": {
+                "opauth/facebook": "Allows Facebook authentication",
+                "opauth/google": "Allows Google authentication",
+                "opauth/twitter": "Allows Twitter authentication"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/Opauth/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "U-Zyn Chua",
+                    "email": "chua@uzyn.com",
+                    "homepage": "http://uzyn.com"
+                }
+            ],
+            "description": "Multi-provider authentication framework for PHP",
+            "homepage": "http://opauth.org",
+            "keywords": [
+                "Authentication",
+                "OpenId",
+                "auth",
+                "facebook",
+                "google",
+                "oauth",
+                "omniauth",
+                "twitter"
+            ],
+            "time": "2013-05-10 09:01:52"
+        },
+        {
+            "name": "opauth/twitter",
+            "version": "0.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opauth/twitter.git",
+                "reference": "9c09fb3d714b8bf7b35ebc235346cf2feced69e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opauth/twitter/zipball/9c09fb3d714b8bf7b35ebc235346cf2feced69e3",
+                "reference": "9c09fb3d714b8bf7b35ebc235346cf2feced69e3",
+                "shasum": ""
+            },
+            "require": {
+                "opauth/opauth": ">=0.2.0",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "U-Zyn Chua",
+                    "email": "chua@uzyn.com",
+                    "homepage": "http://uzyn.com"
+                }
+            ],
+            "description": "Twitter strategy for Opauth",
+            "homepage": "http://opauth.org",
+            "keywords": [
+                "Authentication",
+                "auth",
+                "twitter"
+            ],
+            "time": "2017-03-28 05:03:36"
         },
         {
             "name": "psr/http-message",
@@ -1702,16 +1843,16 @@
         },
         {
             "name": "heroku/heroku-buildpack-php",
-            "version": "v130",
+            "version": "v131",
             "source": {
                 "type": "git",
                 "url": "https://github.com/heroku/heroku-buildpack-php.git",
-                "reference": "1bbbc45da0f80dbb75606972c26236172b7d724c"
+                "reference": "06a81e71d94115668de3f202547fd9d517dc76ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/heroku/heroku-buildpack-php/zipball/1bbbc45da0f80dbb75606972c26236172b7d724c",
-                "reference": "1bbbc45da0f80dbb75606972c26236172b7d724c",
+                "url": "https://api.github.com/repos/heroku/heroku-buildpack-php/zipball/06a81e71d94115668de3f202547fd9d517dc76ca",
+                "reference": "06a81e71d94115668de3f202547fd9d517dc76ca",
                 "shasum": ""
             },
             "bin": [
@@ -1742,7 +1883,7 @@
                 "nginx",
                 "php"
             ],
-            "time": "2018-01-11 17:45:21"
+            "time": "2018-02-12 23:40:16"
         },
         {
             "name": "jakub-onderka/php-console-color",

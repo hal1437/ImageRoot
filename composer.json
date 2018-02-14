@@ -11,7 +11,10 @@
         "cakephp/migrations": "~1.0",
         "cakephp/plugin-installer": "~1.0",
 		"aws/aws-sdk-php": "3.*",
-        "fusic/maintenance": "^3.1"
+        "fusic/maintenance": "~3.1",
+        "opauth/opauth": "*",
+        "opauth/facebook": "*",
+        "opauth/twitter": "*"
     },
     "require-dev": {
         "psy/psysh": "@stable",
