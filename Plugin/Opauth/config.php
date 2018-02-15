@@ -11,8 +11,8 @@ $config = [
             'client_secret' => 'xxx'
         ],
         'Facebook' => [
-            'app_id' => 'xxx',
-            'app_secret' => 'xxx',
+            'app_id' => '1611552788953011',
+            'app_secret' => 'c269a9661f08729e653c4732134e75e7',
             'scope' => 'email',
             'fields' => 'email,first_name,last_name,name'
         ],

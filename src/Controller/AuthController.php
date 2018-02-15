@@ -50,14 +50,19 @@ class AuthController extends AppController
 		// 取得データ表示
 		if (isset($_SESSION['opauth']['auth'])) {
 			// 成功
-
 			// CakePHP ~3.4
 			$session = $this->request->session();
-			// CakePHP 3.5~
-			// $session = $this->request->getSession();
 
 			$session->write('opauth', $_SESSION['opauth']['auth']);
-			var_dump($session->read('opauth'));
+			//名前取り出し
+			$username =  $session->read('opauth')['info']['name'];
+			$this->Cookie->configKey('username', 'encryption', false);
+			$this->Cookie->write('username', $username);
+			//移動
+			return $this->redirect(
+				['controller' => 'Home', 'action' => 'index']
+			);
+
 		} elseif (isset($_SESSION['opauth']['error'])) {
 			// 失敗
 			var_dump($_SESSION['opauth']['error']);

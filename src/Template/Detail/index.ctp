@@ -41,5 +41,6 @@
 	</footer>
 	<?= $this->Html->script('AccessAPI.js');?>
 	<?= $this->Html->script('Detail.js');?>
+	<?= $this->Html->script('AutoComplete.js');?>
 </div>
 
