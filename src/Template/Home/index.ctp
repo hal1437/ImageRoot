@@ -14,10 +14,7 @@
 				<input type="text" class="form-control" id="ListName" placeholder="例.今日の夕飯">
 			</div>
 			<div class="form-group">
-				<label for="NodeUser">名前</label>
-				<input type="text" class="form-control" id="NodeUser" placeholder="例.料理人">
-			</div>
-			<div class="form-group">
+				<label for="NodeUser">本文</label>
 				<textarea class="form-control" id="NodeMessage" rows="3" placeholder="例.カレーライス作ってみました"></textarea>
 			</div>
 

@@ -45,6 +45,14 @@ class AppController extends Controller
         $this->loadComponent('Flash');
         $this->loadComponent('Cookie');
 		$this->viewBuilder()->layout('ImageRootHeader');
+		//クッキーにticketが存在しなければ
+		if($this->request->params['controller'] != "Auth"  && 
+		   $this->request->params['controller'] != "Users" && 
+		   $this->request->getCookie('ticket')==null){
+			return $this->redirect(
+				['controller' => 'Users', 'action' => 'login']
+			);	
+		}
         /*
          * Enable the following components for recommended CakePHP security settings.
          * see http://book.cakephp.org/3.0/en/controllers/components/security.html

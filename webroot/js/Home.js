@@ -8,7 +8,7 @@ function SubmitPushed(){
 	$(".loading-gif").show();
 	var params = {
 		title     : $("#ListName").val(),
-		user_name : $("#NodeUser").val(), 
+		ticket    : $.cookie("ticket"), 
 		message   : $("#NodeMessage").val(),
 		image_id  : -1,
 	};

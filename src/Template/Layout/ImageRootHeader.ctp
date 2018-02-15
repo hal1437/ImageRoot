@@ -29,14 +29,9 @@
 			<div id="gnavi" class="collapse navbar-collapse">
 				<!-- クッキーに名前がある場合の表示 --!>
 				<ul class="nav navbar-nav navbar-right hidden">
-					<button type="button" class="btn btn-primary" onclick="ClearUsername()" >
-						<div style="display:inline;" id="UsernameButton">ユーザー名</div><i class="fas fa-sign-out-alt" ></i>
+					<button type="button" class="btn btn-primary" onclick="Logout()" >
+						<div style="display:inline;" id="UsernameButton">ログアウト</div><i class="fas fa-sign-out-alt" ></i>
 					</button>
-				</ul>
-				<!-- クッキーに名前がない場合の表示 --!>
-				<ul class="nav navbar-nav navbar-right ">
-					<button type="button" class="btn btn-primary" onclick="location.href='/Auth/twitter'"><i class="fab fa-twitter"></i> Twitter</button>
-					<button type="button" class="btn btn-primary" onclick="location.href='/Auth/facebook'"><i class="fab fa-facebook-square"></i> Facebook</button>
 				</ul>
 			</div>
 		</nav>	

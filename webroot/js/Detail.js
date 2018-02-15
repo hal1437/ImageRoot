@@ -9,7 +9,7 @@ function SubmitPushed(){
 	if(url_params.length < 2)return;//クエリに不具合あり
 
 	var params = {
-		user_name : $("#NodeUser").val(), 
+		ticket    : $.cookie("ticket"), 
 		message   : $("#NodeMessage").val(),
 		root_id   : url_params[1].split("&")[0].split("=")[1],
 		image_id  : -1,

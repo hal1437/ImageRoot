@@ -18,10 +18,7 @@
 		</div>
 		<div class="panel-body">
 			<div class="form-group">
-				<label for="NodeUser">名前</label>
-				<input type="text" class="form-control" id="NodeUser" >
-			</div>
-			<div class="form-group">
+				<label for="NodeUser">本文</label>
 				<textarea class="form-control" id="NodeMessage" rows="3"></textarea>
 			</div>
 			<div class="form-group">

@@ -22,9 +22,10 @@ class APIController extends AppController
 		
 		//各制限
 		$roots = TableRegistry::get('roots');
-		if($title    == ""          ){echo "タイトルが空です";return;}
-		if($message  == ""          ){echo "本文が空です"    ;return ;}
-		if($image_id == -1          ){echo "Rootの作成にはファイルの添付が必要です。"         ;return;}
+		if($title     == ""          ){echo "タイトルが空です";return;}
+		if($user_name == ""          ){echo "チケットが不正です";return ;}
+		if($message   == ""          ){echo "本文が空です"    ;return ;}
+		if($image_id  == -1          ){echo "Rootの作成にはファイルの添付が必要です。"         ;return;}
 		if(mb_strlen($title) >= 31  ){echo "Root名の最大文字数は30文字です。"                 ;return;}
 		if($roots->existRoot($title)){echo "既に存在するRoot「". $title."」は作成できません。";return;}
 
@@ -47,7 +48,7 @@ class APIController extends AppController
 		$image_id  = h($request['image_id']);
 
 		//各制限
-		if($user_name == ""){echo "タイトルが空です";return ;}
+		if($user_name == ""){echo "チケットが不正です";return ;}
 		if($message   == ""){echo "本文が空です"    ;return ;}
 		if($root_id   == ""){echo "root_idが空です" ;return ;}
 
@@ -61,13 +62,21 @@ class APIController extends AppController
 		$nodes->save($new_node);
 		return $new_node;
 	}
+	private function getUsernameFromTicket($ticket){
+		$users = TableRegistry::get('users');
+		foreach($users->FilterTicket($ticket) as $index => $row){
+			return $row->username;
+		}
+		return "";
+	}
 
 	public function initialize(){
 	}
 
 	public function index(){
 		$this->autoRender = false;
-		echo $this->request->query('page');
+		//echo $this->request->query('page');
+		echo $this->getUsernameFromTicket("DLbw48eENYKhyNAL1HsJtNzDilbFAxwnjy9DWDsKCcRaP2Lrkea4S0haBjGl7dzH1YuyCDioFao52aNDfOhXopYPzFbWI0DkzY8bBHprH4Nk5ANByV8Dl73Bm57VWlfvkExMvDediRnD2boRXN4ivXJ72r2z38KEni09L5CTwQ7ORMGPAkXViH2BZVa34LhHT8qEdT80JgpBTV03gyyofRPfNQ8rBGZ5pqktjIJTPZ4IUVmatBpz2f4qVd87J7c");
 	}
 	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
 	public function UploadImage(){
@@ -112,7 +121,7 @@ class APIController extends AppController
 		if($this->request->is('ajax')){
 			$root = $this->create_root([
 				"title"     => $this->request->getData('title'),
-				"user_name" => $this->request->getData('user_name'),
+				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"message"   => $this->request->getData('message'),
 				"image_id"  => $this->request->getData('image_id'),
 			]);
@@ -120,7 +129,7 @@ class APIController extends AppController
 
 			$node = $this->create_node([
 				"message"   => $this->request->getData('message'),
-				"user_name" => $this->request->getData('user_name'),
+				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"message"   => $this->request->getData('message'),
 				"root_id"   => $root->root_id,
 				"image_id"  => $this->request->getData('image_id'),
@@ -139,7 +148,7 @@ class APIController extends AppController
 		if($this->request->is('ajax')){
 			$node = $this->create_node([
 				"message"   => $this->request->getData('message'),
-				"user_name" => $this->request->getData('user_name'),
+				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"message"   => $this->request->getData('message'),
 				"root_id"   => $this->request->getData('root_id'),
 				"image_id"  => $this->request->getData('image_id'),
