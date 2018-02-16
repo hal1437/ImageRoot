@@ -81,3 +81,5 @@ Router::scope('/', function (RouteBuilder $routes) {
  * how to customize the loading of plugin routes.
  */
 Plugin::routes();
+Router::connect('/**', array('controller' => 'User', 'action' => 'index'));
+
