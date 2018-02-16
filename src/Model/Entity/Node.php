@@ -2,6 +2,8 @@
 namespace App\Model\Entity;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;//テーブル使用
+use \Datetime;
+use \DatetimeZone;
 
 class Node extends Entity {
 	public function GetNodeID() {
@@ -11,7 +13,9 @@ class Node extends Entity {
 		return $this->root_id;
 	}
 	public function GetCreated() {
-		return date("Y年m月d日 H時i分s秒",strtotime($this->created));
+		$date = new DateTime('@' . strtotime($this->created));
+		$date->setTimeZone( new DateTimeZone('Asia/Tokyo'));
+		return $date->format("Y年m月d日 H時i分");
 	}
 	public function GetUserName() {
 		return $this->user_name;
