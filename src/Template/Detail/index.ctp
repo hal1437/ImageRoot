@@ -26,7 +26,9 @@
 				<input type="file" class="form-control-file" name="NodeImage" aria-describedby="fileHelp">
 			</div>
 			<button type="submit" class="btn btn-primary" onclick="SubmitPushed()">作成</button>
+			<!-- ロード画像 -->
 			<img class="loading-gif" src="img/gif-load.gif"></button>
+
 			<div class="status-message"></div>
 		</div>
 	</div>

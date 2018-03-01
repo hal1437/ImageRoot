@@ -2,3 +2,7 @@
 	margin-top : 10px;
 	margin-left: 10px;
 }
+
+.node-image{
+	cursor: pointer;
+}
