@@ -48,9 +48,9 @@ class APIController extends AppController
 		$image_id  = h($request['image_id']);
 
 		//各制限
-		if($user_name == ""){echo "チケットが不正です";return ;}
-		if($message   == ""){echo "本文が空です"    ;return ;}
-		if($root_id   == ""){echo "root_idが空です" ;return ;}
+		if($user_name == ""){$this->response->body("チケットが不正です");return ;}
+		if($message   == ""){$this->response->body("本文が空です"    );return ;}
+		if($root_id   == ""){$this->response->body("root_idが空です" );return ;}
 
 		//新しいNode作成
 		$nodes = TableRegistry::get('nodes');
@@ -76,8 +76,43 @@ class APIController extends AppController
 	public function index(){
 		$this->autoRender = false;
 		//echo $this->request->query('page');
-		echo $this->getUsernameFromTicket("DLbw48eENYKhyNAL1HsJtNzDilbFAxwnjy9DWDsKCcRaP2Lrkea4S0haBjGl7dzH1YuyCDioFao52aNDfOhXopYPzFbWI0DkzY8bBHprH4Nk5ANByV8Dl73Bm57VWlfvkExMvDediRnD2boRXN4ivXJ72r2z38KEni09L5CTwQ7ORMGPAkXViH2BZVa34LhHT8qEdT80JgpBTV03gyyofRPfNQ8rBGZ5pqktjIJTPZ4IUVmatBpz2f4qVd87J7c");
 	}
+/*
+	private function GetNearImages(){
+		TableRegistry::config("write");
+		$this->autoRender = false;
+		if($this->request->is('ajax')){
+
+			$urls = array();
+			$heuristics = array();
+			$comp_url = $this->request->getData('comp_url')
+
+			//全ての画像のURLを取得
+			$list = TableRegistry::get('images');
+			$query = $list->find();
+			foreach($query as $row){
+				$urls[] = $row->GetURL();
+			}
+			
+			//評価
+			$pic1 = puzzle_fill_cvec_from_file($comp_url);
+			foreach($urls as $url){
+				//近似度判定
+				$pi2 = puzzle_fill_cvec_from_file($url);
+				$d = puzzle_vector_normalized_distance($pic1, $pic2);
+				$heuristics[$d] = $url;
+			}
+			//評価が高い順にソート
+			usort($heuristics);
+			echo json_encode($heuristics);
+		}else{
+			echo "このAPIはajaxでのみ許可されます。";
+		}
+	}
+ */
+	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
+// 	public function GetNearImages(){
+// 	}
 	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
 	public function UploadImage(){
 		TableRegistry::config("write");
@@ -112,7 +147,8 @@ class APIController extends AppController
 		$new_image->url = $image_url;
 		$images->save($new_image);
 
-		echo $new_image;
+		$this->response->body($new_image);
+
 	}
 
 	public function CreateRoot(){
@@ -136,7 +172,8 @@ class APIController extends AppController
 			]);
 			if($node == null)return;
 			
-			echo "新しいRootを作成しました。";
+			$this->response->body("新しいRootを作成しました\n");
+
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
@@ -155,8 +192,8 @@ class APIController extends AppController
 			]);
 			if($node == null)return null;
 
-			echo "新しいNodeを作成しました\n";
-			echo $node->message;
+			$this->response->body("新しいNodeを作成しました\n");
+
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}

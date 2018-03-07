@@ -16,4 +16,3 @@ class UsersTable extends Table {
 	}
 }
 
-

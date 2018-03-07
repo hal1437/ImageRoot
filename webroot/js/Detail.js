@@ -38,4 +38,12 @@ function SubmitPushed(){
 		CreateNode(params);
 	}
 }
+//モーダル展開時
+for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
+	$('#image_Modal' + i).on('show.bs.modal',{ index : i }, function (e) {
+		console.log(e.data.index + "番目の画像詳細が展開されました。");
+	})
+}
+
+
 

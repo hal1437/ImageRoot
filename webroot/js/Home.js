@@ -23,7 +23,6 @@ function SubmitPushed(){
 		UploadImage(
 			fd,
 			function(image){
-				console.log(image);
 				//アップロードされた画像のURLを追加して作成
 				params["image_id"] = JSON.parse(image)['image_id'];
 				$(".status-message").text("Root作成中");
