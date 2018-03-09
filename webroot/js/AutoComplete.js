@@ -4,6 +4,5 @@ window.onload = function() {
 	if($.cookie('username') != undefined){
 		$('#NodeUser').attr("value",$.cookie('username'));
 		$('#NodeUser').prop("disabled", true);
-
 	}
 };

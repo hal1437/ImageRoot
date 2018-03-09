@@ -77,15 +77,16 @@ class APIController extends AppController
 		$this->autoRender = false;
 		//echo $this->request->query('page');
 	}
-/*
-	private function GetNearImages(){
+
+	//似ている画像を探す
+	public function GetNearImages(){
 		TableRegistry::config("write");
 		$this->autoRender = false;
 		if($this->request->is('ajax')){
 
 			$urls = array();
 			$heuristics = array();
-			$comp_url = $this->request->getData('comp_url')
+			$comp_url = $this->request->getData('comp_url');
 
 			//全ての画像のURLを取得
 			$list = TableRegistry::get('images');
@@ -93,23 +94,24 @@ class APIController extends AppController
 			foreach($query as $row){
 				$urls[] = $row->GetURL();
 			}
-			
+
 			//評価
 			$pic1 = puzzle_fill_cvec_from_file($comp_url);
+// 			echo $pic1;
 			foreach($urls as $url){
 				//近似度判定
-				$pi2 = puzzle_fill_cvec_from_file($url);
+				$pic2 = puzzle_fill_cvec_from_file($url);
 				$d = puzzle_vector_normalized_distance($pic1, $pic2);
 				$heuristics[$d] = $url;
 			}
 			//評価が高い順にソート
-			usort($heuristics);
-			echo json_encode($heuristics);
+			ksort($heuristics);
+// 			echo json_encode($urls);
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
 	}
- */
+
 	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
 // 	public function GetNearImages(){
 // 	}
@@ -186,7 +188,6 @@ class APIController extends AppController
 			$node = $this->create_node([
 				"message"   => $this->request->getData('message'),
 				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
-				"message"   => $this->request->getData('message'),
 				"root_id"   => $this->request->getData('root_id'),
 				"image_id"  => $this->request->getData('image_id'),
 			]);

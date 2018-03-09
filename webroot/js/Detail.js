@@ -38,10 +38,23 @@ function SubmitPushed(){
 		CreateNode(params);
 	}
 }
-//モーダル展開時
+
+
+//モーダル展開時のイベント
 for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 	$('#image_Modal' + i).on('show.bs.modal',{ index : i }, function (e) {
+
 		console.log(e.data.index + "番目の画像詳細が展開されました。");
+		SendAjax("/API/GetNearImages",
+			{
+				comp_url: document.getElementById("image"+e.data.index).src
+			},	
+			function(response){
+				//通信成功時の処理
+				alert(response);
+				location.reload();
+			}
+		);
 	})
 }
 
