@@ -25,6 +25,7 @@ function SubmitPushed(){
 		UploadImage(
 			fd,
 			function(image){
+				console.log(image);
 				//アップロードされた画像のURLを追加して作成
 				params["image_id"] = JSON.parse(image)['image_id'];
 				$(".status-message").text("Node作成中");
@@ -47,12 +48,33 @@ for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 		console.log(e.data.index + "番目の画像詳細が展開されました。");
 		SendAjax("/API/GetNearImages",
 			{
-				comp_url: document.getElementById("image"+e.data.index).src
+				comp_url: document.getElementById("image" + e.data.index).src,
+				index   : e.data.index
 			},	
 			function(response){
 				//通信成功時の処理
-				alert(response);
-				location.reload();
+				var index = JSON.parse(response)['index'];
+				var list = document.getElementById("image_Modal"+index).getElementsByClassName("near-contents")[0];
+				for(var j =0;j<2;j++){
+					var div = document.createElement("div");
+					var a   = document.createElement("a");
+					var p   = document.createElement("p");
+					var img = document.createElement("img");
+					div.classList.add("col-xs-6","col-md-6");
+					a.href = "/home";
+					a.classList.add("thumbnail");
+					p.innerHTML = "hello";
+					img.src = "https://ir-s3-bucket.s3.us-east-2.amazonaws.com/Images/book_yoko.png";
+					img.height = "1000";
+					img.classList.add("pull-left","img-responsive");
+					img.style = "padding:0;margin:0 15px 0 0;"
+					list.appendChild(div);
+					div.appendChild(a);
+					a.appendChild(img);
+					a.appendChild(p);
+				}
+				//ロード画面を隠す
+				$("#image_modal_loading"+index).hide();
 			}
 		);
 	})

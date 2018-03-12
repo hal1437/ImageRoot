@@ -86,35 +86,36 @@ class APIController extends AppController
 
 			$urls = array();
 			$heuristics = array();
+			
 			$comp_url = $this->request->getData('comp_url');
 
 			//全ての画像のURLを取得
 			$list = TableRegistry::get('images');
+			
+			//１枚目のシグネチャを取得
+			$sig1 = gzinflate(base64_decode($list->find('all',[
+				'conditions' =>[
+					'url' => $comp_url
+				]
+			])->first()->GetSignature()));
+
+			//各画像と比較
 			$query = $list->find();
 			foreach($query as $row){
-				$urls[] = $row->GetURL();
-			}
-
-			//評価
-			$pic1 = puzzle_fill_cvec_from_file($comp_url);
-// 			echo $pic1;
-			foreach($urls as $url){
 				//近似度判定
-				$pic2 = puzzle_fill_cvec_from_file($url);
-				$d = puzzle_vector_normalized_distance($pic1, $pic2);
-				$heuristics[$d] = $url;
+				$sig2 = gzinflate(base64_decode($row->GetSignature()));
+				$d = puzzle_vector_normalized_distance($sig1, $sig2);
+				if($d != 0)$heuristics[$d * pow(10,5)] = $row->GetURL();
 			}
 			//評価が高い順にソート
 			ksort($heuristics);
-// 			echo json_encode($urls);
+			$heuristics["index"] = $this->request->getData('index');
+			echo json_encode($heuristics);
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
 	}
 
-	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
-// 	public function GetNearImages(){
-// 	}
 	//画像をS3サーバーとデータベースにアップロードし、image_idを返す
 	public function UploadImage(){
 		TableRegistry::config("write");
@@ -143,14 +144,20 @@ class APIController extends AppController
 			$image_url = "http://".Configure::read('cloud_front_domain', 'CloudFront.php')."/Images/".$file_name;
 		}
 
+
 		//新しいImageとしてデータベースにURLを登録
 		$images = TableRegistry::get('images');
+
+		//ファイルをコピー
+		$local_image = './image_tmp/' . $images->find()->count() . "." . substr($file_name, strrpos($file_name, '.') + 1);
+		copy($file_tmp , $local_image);
+
 		$new_image = $images->newEntity(); //エンティティ作成
 		$new_image->url = $image_url;
+		$new_image->signature = base64_encode(gzdeflate(puzzle_fill_cvec_from_file($local_image)));
 		$images->save($new_image);
 
 		$this->response->body($new_image);
-
 	}
 
 	public function CreateRoot(){

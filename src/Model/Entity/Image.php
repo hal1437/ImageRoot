@@ -10,5 +10,8 @@ class Image extends Entity {
 	public function GetURL() {
 		return $this->url;
 	}
+	public function GetSignature() {
+		return $this->signature;
+	}
 }
 

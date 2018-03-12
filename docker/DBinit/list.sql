@@ -20,7 +20,8 @@ create table nodes(
 -- 画像
 create table images(
 	image_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-	url TEXT
+	url TEXT,
+	signature TEXT
 );
 -- ユーザーデータ
 create table users (
