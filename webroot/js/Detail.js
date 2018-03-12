@@ -46,35 +46,43 @@ for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 	$('#image_Modal' + i).on('show.bs.modal',{ index : i }, function (e) {
 
 		console.log(e.data.index + "番目の画像詳細が展開されました。");
-		SendAjax("/API/GetNearImages",
+		SendAjax("/API/GetNearNodes",
 			{
 				comp_url: document.getElementById("image" + e.data.index).src,
 				index   : e.data.index
 			},	
 			function(response){
 				//通信成功時の処理
-				var index = JSON.parse(response)['index'];
+				var perse = JSON.parse(response)
+				var index = perse['index'];
+			
+				//似ているNodeを追記
 				var list = document.getElementById("image_Modal"+index).getElementsByClassName("near-contents")[0];
-				for(var j =0;j<2;j++){
-					var div = document.createElement("div");
-					var a   = document.createElement("a");
-					var p   = document.createElement("p");
-					var img = document.createElement("img");
-					div.classList.add("col-xs-6","col-md-6");
-					a.href = "/home";
-					a.classList.add("thumbnail");
-					p.innerHTML = "hello";
-					img.src = "https://ir-s3-bucket.s3.us-east-2.amazonaws.com/Images/book_yoko.png";
-					img.height = "1000";
-					img.classList.add("pull-left","img-responsive");
-					img.style = "padding:0;margin:0 15px 0 0;"
-					list.appendChild(div);
-					div.appendChild(a);
-					a.appendChild(img);
-					a.appendChild(p);
+				if(list.childElementCount < 3){
+					for(key in perse){
+						if(key=="index")continue;
+						var div = document.createElement("div");
+						var a   = document.createElement("a");
+						var p   = document.createElement("p");
+						var img = document.createElement("img");
+						div.classList.add("col-xs-6","col-md-6");
+						a.classList.add("thumbnail");
+						a.href = "/detail?list=" + perse[key].root_id + "#Node"+perse[key].node_id;
+						p.innerHTML = 
+							"Root名　：" + perse[key].root_name  + "<br>" + 
+							"Node番号：" + perse[key].node_index + "<br>" + 
+							"Node文章：" + perse[key].message    + "<br>" + 
+							"距離　　：" + key*0.00001           + "<br>";
+						img.src = perse[key].image_url;
+
+						list.appendChild(div);
+						div.appendChild(a);
+						a.appendChild(img);
+						a.appendChild(p);
+					}
+					//ロード画面を隠す
+					$("#image_modal_loading"+index).hide();
 				}
-				//ロード画面を隠す
-				$("#image_modal_loading"+index).hide();
 			}
 		);
 	})

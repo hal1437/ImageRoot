@@ -1,11 +1,11 @@
 
 <?= $this->Html->css('Node.css');?>
-<div class="panel panel-default">
+<div class="panel panel-default" id="Node<?= $index+1 ?>">
 	<div class="panel-body">
 
 		<?= $index+1 ?>.　<?= $item->GetUserName() ?>　<?= $item->GetCreated() ?><br>
 
-		<div class="node-message">
+		<div class="node-message" >
 			<?= $item->GetMessage() ?>
 
 			<!-- 画像が存在すれば追加 -->

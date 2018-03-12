@@ -70,47 +70,63 @@ class APIController extends AppController
 		return "";
 	}
 
+	private function getRootNameFromRootID($root_id){
+		$roots  = TableRegistry::get('roots');
+		return $roots->find('all',[
+			'conditions' =>[
+				'root_id' => $root_id
+			]
+		])->first()->title;
+	}
+
+
 	public function initialize(){
 	}
 
 	public function index(){
 		$this->autoRender = false;
-		//echo $this->request->query('page');
 	}
 
 	//似ている画像を探す
-	public function GetNearImages(){
+	public function GetNearNodes(){
 		TableRegistry::config("write");
 		$this->autoRender = false;
 		if($this->request->is('ajax')){
 
-			$urls = array();
-			$heuristics = array();
+			$urls  = array();
+			$nodes = array();
 			
 			$comp_url = $this->request->getData('comp_url');
 
 			//全ての画像のURLを取得
-			$list = TableRegistry::get('images');
+			$images = TableRegistry::get('images');
 			
 			//１枚目のシグネチャを取得
-			$sig1 = gzinflate(base64_decode($list->find('all',[
+			$sig1 = gzinflate(base64_decode($images->find('all',[
 				'conditions' =>[
 					'url' => $comp_url
 				]
 			])->first()->GetSignature()));
 
 			//各画像と比較
-			$query = $list->find();
-			foreach($query as $row){
+			$nodes = TableRegistry::get('nodes');
+			$roots = TableRegistry::get('roots');
+			foreach($images->find() as $row){
 				//近似度判定
 				$sig2 = gzinflate(base64_decode($row->GetSignature()));
 				$d = puzzle_vector_normalized_distance($sig1, $sig2);
-				if($d != 0)$heuristics[$d * pow(10,5)] = $row->GetURL();
+
+				//追加情報
+				$node = $nodes->GetNodeFromImageURL($row->GetURL());
+				$node["node_index"] = $roots->GetFromID($node->root_id)->GetNodeIndex($node->node_id);
+				$node["root_name" ] = $roots->GetFromID($node->root_id)->GetTitle();
+				$node["image_url" ] = $nodes->GetFromID($node->node_id)->GetImageURL();
+				if($d != 0)$nears[$d * pow(10,5)] = $node;
 			}
 			//評価が高い順にソート
-			ksort($heuristics);
-			$heuristics["index"] = $this->request->getData('index');
-			echo json_encode($heuristics);
+			ksort($nears);
+			$nears["index"] = $this->request->getData('index');
+			echo json_encode($nears);
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}
@@ -143,7 +159,6 @@ class APIController extends AppController
 		}else{
 			$image_url = "http://".Configure::read('cloud_front_domain', 'CloudFront.php')."/Images/".$file_name;
 		}
-
 
 		//新しいImageとしてデータベースにURLを登録
 		$images = TableRegistry::get('images');

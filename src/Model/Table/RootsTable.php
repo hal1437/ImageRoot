@@ -14,5 +14,12 @@ class RootsTable extends Table {
 			]
 		 ])->count() > 0;
 	}
+	public function GetFromID($root_id){
+		return $this->find('all',[
+			'conditions' =>[
+				'root_id' => $root_id
+			]
+		])->first();
+	}
 }
 

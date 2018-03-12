@@ -45,12 +45,7 @@ class Node extends Entity {
 		if($this->image_id == -1)return null;
 		else{
 			$list = TableRegistry::get('images');
-			$query = $list->find('all',[
-				'conditions' =>[
-					'image_id' => $this->image_id
-				]
-			]);
-			return $query->first()["url"];
+			return $list->GetFromID($this->image_id)["url"];
 		}
 	}
 }
