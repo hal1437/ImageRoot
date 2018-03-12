@@ -16,26 +16,30 @@ class APIController extends AppController
 		TableRegistry::config("write");
 		//パラメータ取得
 		$title     = h($request['title']);
-		$user_name = h($request['user_name']);
+		$ticket = h($request['ticket']);
 		$image_id  = h($request['image_id']);
 		$message   = h($request['message']);
 		
 		//各制限
 		$roots = TableRegistry::get('roots');
 		if($title     == ""          ){echo "タイトルが空です";return;}
-		if($user_name == ""          ){echo "チケットが不正です";return ;}
+		if($ticket == ""          ){echo "チケットが不正です。再度ログインしてくだい。";return ;}
 		if($message   == ""          ){echo "本文が空です"    ;return ;}
 		if($image_id  == -1          ){echo "Rootの作成にはファイルの添付が必要です。"         ;return;}
 		if(mb_strlen($title) >= 31  ){echo "Root名の最大文字数は30文字です。"                 ;return;}
 		if($roots->existRoot($title)){echo "既に存在するRoot「". $title."」は作成できません。";return;}
 
 		//新しいRootを作成
-		$new_root = $roots->newEntity(); //エンティティ作成
-		$new_root->title     = $title;
-		$new_root->user_name = $user_name;
-		$new_root->message   = $message;
-		$new_root->image_id  = $image_id;
-		$roots->save($new_root);
+		try {
+			$new_root = $roots->newEntity(); //エンティティ作成
+			$new_root->title     = $title;
+			$new_root->ticket = $ticket;
+			$new_root->message   = $message;
+			$new_root->image_id  = $image_id;
+			$roots->save($new_root);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 		return $new_root;
 	}
 	//Nodeをデータベースに登録
@@ -43,23 +47,27 @@ class APIController extends AppController
 		TableRegistry::config("write");
 		//パラメータ取得
 		$message   = h($request['message']);
-		$user_name = h($request['user_name']);
+		$ticket = h($request['ticket']);
 		$root_id   = h($request['root_id']);
 		$image_id  = h($request['image_id']);
 
 		//各制限
-		if($user_name == ""){$this->response->body("チケットが不正です");return ;}
+		if($ticket == ""){$this->response->body("チケットが不正です。再度ログインしてくだい。");return ;}
 		if($message   == ""){$this->response->body("本文が空です"    );return ;}
 		if($root_id   == ""){$this->response->body("root_idが空です" );return ;}
 
 		//新しいNode作成
-		$nodes = TableRegistry::get('nodes');
-		$new_node = $nodes->newEntity(); 
-		$new_node->message   = $message;
-		$new_node->user_name = $user_name;
-		$new_node->root_id   = $root_id;
-		$new_node->image_id  = $image_id;
-		$nodes->save($new_node);
+		try {
+			$nodes = TableRegistry::get('nodes');
+			$new_node = $nodes->newEntity(); 
+			$new_node->message   = $message;
+			$new_node->ticket = $ticket;
+			$new_node->root_id   = $root_id;
+			$new_node->image_id  = $image_id;
+			$nodes->save($new_node);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 		return $new_node;
 	}
 	private function getUsernameFromTicket($ticket){
@@ -109,19 +117,22 @@ class APIController extends AppController
 			])->first()->GetSignature()));
 
 			//各画像と比較
-			$nodes = TableRegistry::get('nodes');
-			$roots = TableRegistry::get('roots');
+			$nodes  = TableRegistry::get('nodes');
+			$roots  = TableRegistry::get('roots');
+			$images = TableRegistry::get('images');
 			foreach($images->find() as $row){
 				//近似度判定
 				$sig2 = gzinflate(base64_decode($row->GetSignature()));
 				$d = puzzle_vector_normalized_distance($sig1, $sig2);
 
-				//追加情報
-				$node = $nodes->GetNodeFromImageURL($row->GetURL());
-				$node["node_index"] = $roots->GetFromID($node->root_id)->GetNodeIndex($node->node_id);
-				$node["root_name" ] = $roots->GetFromID($node->root_id)->GetTitle();
-				$node["image_url" ] = $nodes->GetFromID($node->node_id)->GetImageURL();
-				if($d != 0)$nears[$d * pow(10,5)] = $node;
+// 				if($d < PUZZLE_CVEC_SIMILARITY_LOWER_THRESHOLD){
+					//追加情報
+					$node = $nodes->GetNodeFromImageURL($row->GetURL());
+					$node["node_index"] = $roots->GetFromID($node->root_id)->GetNodeIndex($node->node_id);
+					$node["root_name" ] = $roots->GetFromID($node->root_id)->GetTitle();
+					$node["image_url" ] = $nodes->GetFromID($node->node_id)->GetImageURL();
+					if($d != 0)$nears[$d * pow(10,5)] = $node;
+// 				}
 			}
 			//評価が高い順にソート
 			ksort($nears);
@@ -136,6 +147,10 @@ class APIController extends AppController
 	public function UploadImage(){
 		TableRegistry::config("write");
 		$this->autoRender = false;
+		//チケット確認
+		if($this->getUsernameFromTicket($this->request->getData('ticket')) == ""){
+			return;
+		}
 		$s3client = S3Client::factory([
 			'region' => 'us-east-2',
 			'version' => 'latest',
@@ -164,13 +179,18 @@ class APIController extends AppController
 		$images = TableRegistry::get('images');
 
 		//ファイルをコピー
-		$local_image = './image_tmp/' . $images->find()->count() . "." . substr($file_name, strrpos($file_name, '.') + 1);
+		$local_image = '/image_tmp/' . $images->find()->count() . "." . substr($file_name, strrpos($file_name, '.') + 1);
 		copy($file_tmp , $local_image);
 
-		$new_image = $images->newEntity(); //エンティティ作成
-		$new_image->url = $image_url;
-		$new_image->signature = base64_encode(gzdeflate(puzzle_fill_cvec_from_file($local_image)));
-		$images->save($new_image);
+		puzzle_set_lambdas(13);
+		try {
+			$new_image = $images->newEntity(); //エンティティ作成
+			$new_image->url = $image_url;
+			$new_image->signature = base64_encode(gzdeflate(puzzle_fill_cvec_from_file($local_image)));
+			$images->save($new_image);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 
 		$this->response->body($new_image);
 	}
@@ -181,7 +201,7 @@ class APIController extends AppController
 		if($this->request->is('ajax')){
 			$root = $this->create_root([
 				"title"     => $this->request->getData('title'),
-				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
+				"ticket"    => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"message"   => $this->request->getData('message'),
 				"image_id"  => $this->request->getData('image_id'),
 			]);
@@ -189,7 +209,7 @@ class APIController extends AppController
 
 			$node = $this->create_node([
 				"message"   => $this->request->getData('message'),
-				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
+				"ticket"    => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"message"   => $this->request->getData('message'),
 				"root_id"   => $root->root_id,
 				"image_id"  => $this->request->getData('image_id'),
@@ -209,14 +229,13 @@ class APIController extends AppController
 		if($this->request->is('ajax')){
 			$node = $this->create_node([
 				"message"   => $this->request->getData('message'),
-				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
+				"ticket" => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"root_id"   => $this->request->getData('root_id'),
 				"image_id"  => $this->request->getData('image_id'),
 			]);
 			if($node == null)return null;
 
 			$this->response->body("新しいNodeを作成しました\n");
-
 		}else{
 			echo "このAPIはajaxでのみ許可されます。";
 		}

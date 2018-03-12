@@ -23,7 +23,7 @@ function UploadImage(data,success){
 		success : success,
 		error: function(data){
 			//通信失敗時の処理
-			alert('通信失敗');
+			alert('画像のアップロードに失敗しました');
 			console.log(data);
 		},
 		processData : false,

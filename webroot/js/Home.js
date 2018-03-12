@@ -16,13 +16,18 @@ function SubmitPushed(){
 	//添付画像があれば
 	if ($("input[name='RootImage']").val()!== '') {
 		var fd = new FormData();
-		fd.append( "file", $("input[name='RootImage']").prop("files")[0] );
+		fd.append( "file"  , $("input[name='RootImage']").prop("files")[0] );
+		fd.append( "ticket",$.cookie("ticket"));
 
 		$(".status-message").text("ファイルアップロード中");
 		//ファイルアップロード
 		UploadImage(
 			fd,
 			function(image){
+				if(image==""){
+					alert("チケットが不正です。再度ログインしてくだい。");
+					Logout();
+				}
 				//アップロードされた画像のURLを追加して作成
 				params["image_id"] = JSON.parse(image)['image_id'];
 				$(".status-message").text("Root作成中");

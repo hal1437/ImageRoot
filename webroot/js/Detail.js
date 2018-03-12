@@ -53,6 +53,7 @@ for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 			},	
 			function(response){
 				//通信成功時の処理
+				console.log(response);
 				var perse = JSON.parse(response)
 				var index = perse['index'];
 			

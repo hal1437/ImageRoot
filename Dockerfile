@@ -27,5 +27,6 @@ RUN echo "extension=libpuzzle.so" >> /etc/php/7.0/cli/php.ini
 RUN sed -i -e "s/;extension=php_openssl.dll/extension=php_openssl.dll/g" /etc/php/7.0/cli/php.ini
 
 RUN mkdir /code
+RUN mkdir /image_tmp
 WORKDIR /code
 CMD composer update

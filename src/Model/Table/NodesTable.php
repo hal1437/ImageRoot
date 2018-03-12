@@ -17,14 +17,15 @@ class NodesTable extends Table {
 	}
 	public function GetNodeFromImageURL($image_url){
 		$images = TableRegistry::get('images');
-		$image_id = $images->find('all',[
+		$nodes = TableRegistry::get('nodes');
+		$img_id = $images->find('all',[
 			'conditions' =>[
 				'url' => $image_url
 			]
 		])->first()->GetImageID();
-		return $this->find('all',[
+		return $nodes->find('all',[
 			'conditions' =>[
-				'image_id' => $image_id
+				'image_id' => $img_id
 			]
 		])->first();
 	}
