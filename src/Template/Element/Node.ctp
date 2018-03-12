@@ -14,17 +14,18 @@
 
 				<!-- モーダルダイアログ -->
 				<div class="modal fade" id="image_Modal<?= $index+1 ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-					<div class="modal-dialog modal-lg modal-middle"> 
+					<div class="modal-dialog modal-lg modal-middle container"> 
 						<div class="modal-content">
 							<div class="modal-body">
 								<img  src="<?= $item->GetImageURL()?>" class="aligncenter size-full wp-image-425" alt="baby-1151351_1920" />
 							</div>
 						
 							<h3>この画像に似ているNode</h3>
-							<div class="near-contents m-5">
-								<img id="image_modal_loading<?= $index+1 ?>" src="img/gif-load-large.gif"></button>
+							<div class="near-contents row row-eq-height">
+								<img class="img-responsive" id="image_modal_loading<?= $index+1 ?>" src="img/gif-load-large.gif"></button>
 							</div>
-							<div class="modal-img_footer m-5">
+							<Hr>
+							<div class="modal-img-footer">
 								<button type="button" class="btn btn-success" data-dismiss="modal">Close</button> 
 							</div>
 						

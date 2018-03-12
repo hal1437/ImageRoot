@@ -7,6 +7,16 @@
 	cursor: pointer;
 }
 
-.modal-img_footer{
+.modal-img-footer{
 	margin : 10px;
+}
+
+.thumbnail-img{
+	width : 300px;
+	height: 300px;
+	/* object-fit: cover; */
+}
+.row-eq-height {
+    display: flex;
+    flex-wrap: wrap;
 }

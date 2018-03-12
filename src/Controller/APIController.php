@@ -135,7 +135,9 @@ class APIController extends AppController
 // 				}
 			}
 			//評価が高い順にソート
-			ksort($nears);
+			if(isset($nears)){
+				ksort($nears);
+			}
 			$nears["index"] = $this->request->getData('index');
 			echo json_encode($nears);
 		}else{

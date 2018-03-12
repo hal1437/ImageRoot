@@ -24,7 +24,7 @@ function SubmitPushed(){
 		UploadImage(
 			fd,
 			function(image){
-				if(image==""){
+				if(image == ""){
 					alert("チケットが不正です。再度ログインしてくだい。");
 					Logout();
 				}
