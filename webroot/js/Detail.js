@@ -25,6 +25,10 @@ function SubmitPushed(){
 		UploadImage(
 			fd,
 			function(image){
+				if(image==""){
+					alert("チケットが不正です。再度ログインしてくだい。");
+					Logout();
+				}
 				console.log(image);
 				//アップロードされた画像のURLを追加して作成
 				params["image_id"] = JSON.parse(image)['image_id'];
