@@ -3,6 +3,7 @@
 /.aws/*
 /vendor/*
 /config/app.php
+/config/CloudFront.php
 /Plugin/Opauth/config.php
 
 /tmp/cache/models/*
