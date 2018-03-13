@@ -120,24 +120,32 @@ class APIController extends AppController
 			$nodes  = TableRegistry::get('nodes');
 			$roots  = TableRegistry::get('roots');
 			$images = TableRegistry::get('images');
+
 			foreach($images->find() as $row){
 				//近似度判定
 				$sig2 = gzinflate(base64_decode($row->GetSignature()));
 				$d = puzzle_vector_normalized_distance($sig1, $sig2);
 
-// 				if($d < PUZZLE_CVEC_SIMILARITY_LOWER_THRESHOLD){
-					//追加情報
-					$node = $nodes->GetNodeFromImageURL($row->GetURL());
-					$node["node_index"] = $roots->GetFromID($node->root_id)->GetNodeIndex($node->node_id);
-					$node["root_name" ] = $roots->GetFromID($node->root_id)->GetTitle();
-					$node["image_url" ] = $nodes->GetFromID($node->node_id)->GetImageURL();
-					if($d != 0)$nears[$d * pow(10,5)] = $node;
-// 				}
+				//追加情報
+				$node = $nodes->GetNodeFromImageURL($row->GetURL());
+				$node["node_index"] = $roots->GetFromID($node->root_id)->GetNodeIndex($node->node_id);
+				$node["root_name" ] = $roots->GetFromID($node->root_id)->GetTitle();
+				$node["image_url" ] = $nodes->GetFromID($node->node_id)->GetImageURL();
+				if($d != 0)$nears[$d * pow(10,5)] = $node;
 			}
 			//評価が高い順にソート
 			if(isset($nears)){
 				ksort($nears);
 			}
+			//配列をトリム
+			$index_count = 0;
+			foreach($nears as $i => $v){
+				$index_count++;
+				$nears_tmp[$i] = $v;
+				if($index_count >= 5)break;
+			}
+			$nears = $nears_tmp;
+
 			$nears["index"] = $this->request->getData('index');
 			echo json_encode($nears);
 		}else{
