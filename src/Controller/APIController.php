@@ -16,14 +16,14 @@ class APIController extends AppController
 		TableRegistry::config("write");
 		//パラメータ取得
 		$title     = h($request['title']);
-		$ticket = h($request['ticket']);
+		$user_name = h($request['user_name']);
 		$image_id  = h($request['image_id']);
 		$message   = h($request['message']);
 		
 		//各制限
 		$roots = TableRegistry::get('roots');
 		if($title     == ""          ){echo "タイトルが空です";return;}
-		if($ticket == ""          ){echo "チケットが不正です。再度ログインしてくだい。";return ;}
+		if($user_name == ""          ){echo "チケットが不正です。再度ログインしてくだい。";return ;}
 		if($message   == ""          ){echo "本文が空です"    ;return ;}
 		if($image_id  == -1          ){echo "Rootの作成にはファイルの添付が必要です。"         ;return;}
 		if(mb_strlen($title) >= 31  ){echo "Root名の最大文字数は30文字です。"                 ;return;}
@@ -33,7 +33,7 @@ class APIController extends AppController
 		try {
 			$new_root = $roots->newEntity(); //エンティティ作成
 			$new_root->title     = $title;
-			$new_root->ticket = $ticket;
+			$new_root->user_name = $user_name;
 			$new_root->message   = $message;
 			$new_root->image_id  = $image_id;
 			$roots->save($new_root);
@@ -47,12 +47,12 @@ class APIController extends AppController
 		TableRegistry::config("write");
 		//パラメータ取得
 		$message   = h($request['message']);
-		$ticket = h($request['ticket']);
+		$user_name = h($request['user_name']);
 		$root_id   = h($request['root_id']);
 		$image_id  = h($request['image_id']);
 
 		//各制限
-		if($ticket == ""){$this->response->body("チケットが不正です。再度ログインしてくだい。");return ;}
+		if($user_name == ""){$this->response->body("チケットが不正です。再度ログインしてくだい。");return ;}
 		if($message   == ""){$this->response->body("本文が空です"    );return ;}
 		if($root_id   == ""){$this->response->body("root_idが空です" );return ;}
 
@@ -61,7 +61,7 @@ class APIController extends AppController
 			$nodes = TableRegistry::get('nodes');
 			$new_node = $nodes->newEntity(); 
 			$new_node->message   = $message;
-			$new_node->ticket = $ticket;
+			$new_node->user_name = $user_name;
 			$new_node->root_id   = $root_id;
 			$new_node->image_id  = $image_id;
 			$nodes->save($new_node);
@@ -203,7 +203,7 @@ class APIController extends AppController
 		if($this->request->is('ajax')){
 			$root = $this->create_root([
 				"title"     => $this->request->getData('title'),
-				"ticket"    => $this->getUsernameFromTicket($this->request->getData('ticket')),
+				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"message"   => $this->request->getData('message'),
 				"image_id"  => $this->request->getData('image_id'),
 			]);
@@ -211,7 +211,7 @@ class APIController extends AppController
 
 			$node = $this->create_node([
 				"message"   => $this->request->getData('message'),
-				"ticket"    => $this->getUsernameFromTicket($this->request->getData('ticket')),
+				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"message"   => $this->request->getData('message'),
 				"root_id"   => $root->root_id,
 				"image_id"  => $this->request->getData('image_id'),
@@ -231,7 +231,7 @@ class APIController extends AppController
 		if($this->request->is('ajax')){
 			$node = $this->create_node([
 				"message"   => $this->request->getData('message'),
-				"ticket" => $this->getUsernameFromTicket($this->request->getData('ticket')),
+				"user_name" => $this->getUsernameFromTicket($this->request->getData('ticket')),
 				"root_id"   => $this->request->getData('root_id'),
 				"image_id"  => $this->request->getData('image_id'),
 			]);
