@@ -142,7 +142,7 @@ class APIController extends AppController
 			foreach($nears as $i => $v){
 				$index_count++;
 				$nears_tmp[$i] = $v;
-				if($index_count >= 5)break;
+				if($index_count >= 4)break;
 			}
 			$nears = $nears_tmp;
 

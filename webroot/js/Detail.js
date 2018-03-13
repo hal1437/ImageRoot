@@ -73,7 +73,7 @@ for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 						var a   = document.createElement("a");
 						var p   = document.createElement("p");
 						var img = document.createElement("img");
-						div.classList.add("col-xs-6","col-md-4","col-lg-3");
+						div.classList.add("col-xs-6","col-md-3","col-lg-3");
 						a.classList.add("thumbnail");
 						a.href = "/detail?list=" + parse[key].root_id + "#Node"+parse[key].node_id;
 						a.onclick = function(){
