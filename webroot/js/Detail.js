@@ -30,7 +30,7 @@ function SubmitPushed(){
 					alert("チケットが不正です。再度ログインしてくだい。");
 					Logout();
 				}
-				console.log(image);
+// 				console.log(image);
 				//アップロードされた画像のURLを追加して作成
 				params["image_id"] = JSON.parse(image)['image_id'];
 				$(".status-message").text("Node作成中");
@@ -45,12 +45,11 @@ function SubmitPushed(){
 	}
 }
 
-
-//モーダル展開時のイベント
+//モーダルダイアログ展開時のイベント
 for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 	$('#image_Modal' + i).on('show.bs.modal',{ index : i }, function (e) {
 
-		console.log(e.data.index + "番目の画像詳細が展開されました。");
+// 		console.log(e.data.index + "番目の画像詳細が展開されました。");
 		SendAjax("/API/GetNearNodes",
 			{
 				comp_url: document.getElementById("image" + e.data.index).src,
@@ -58,7 +57,7 @@ for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 			},	
 			function(response){
 				//通信成功時の処理
-				console.log(response);
+// 				console.log(response);
 				var parse = JSON.parse(response)
 				var index = parse['index'];
 			
@@ -77,6 +76,10 @@ for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 						div.classList.add("col-xs-6","col-md-4","col-lg-3");
 						a.classList.add("thumbnail");
 						a.href = "/detail?list=" + parse[key].root_id + "#Node"+parse[key].node_id;
+						a.onclick = function(){
+							$('#image_Modal' + parse['index']).modal('hide');
+// 							console.log(parse['index']);
+						};
 						p.innerHTML = 
 							"Root名　：" + parse[key].root_name  + "<br>" + 
 							"Node番号：" + parse[key].node_index + "<br>" + 
@@ -97,6 +100,5 @@ for(var i=1;i <= document.getElementsByClassName("node-message").length;i++){
 		);
 	})
 }
-
 
 
