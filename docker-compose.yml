@@ -7,8 +7,7 @@ services:
         ports:
             - "8765:8765"
         volumes:
-                - .:/code
-                - .aws:/root/.aws
+                - .:/root/
         depends_on:
                 - mysql
 
