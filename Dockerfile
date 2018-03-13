@@ -1,6 +1,7 @@
 
 FROM ubuntu
-RUN apt-get update
+RUN apt-get -y update
+RUN apt-get -y upgrade
 
 #PHPのインストール
 RUN apt-get install -y composer curl php php-intl php-mbstring php-mysql php-xml php-curl php-dev
